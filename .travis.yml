@@ -3,6 +3,13 @@ language: go
 go:
   - 1.8.x
   - 1.9.x
+  - master
+os:
+  - linux
+matrix:
+ fast_finish: true
+ allow_failures:
+   - go: master
 
 env:
   - GO_ENV=test
@@ -11,8 +18,9 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database saloon_test;' -U postgres
+  - buffalo db create -a
   - mkdir -p $TRAVIS_BUILD_DIR/public/assets
+  - go get github.com/gobuffalo/suite
 
 go_import_path: github.com/go-saloon/saloon
 
