@@ -1,0 +1,6 @@
+- id: "category.created.success"
+  translation: "Category was successfully created."
+- id: "category.updated.success"
+  translation: "Category was successfully updated."
+- id: "category.destroyed.success"
+  translation: "Category was successfully destroyed."

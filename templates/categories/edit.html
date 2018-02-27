@@ -1,0 +1,8 @@
+<div class="page-header">
+  <h1>Edit Category</h1>
+</div>
+
+<%= form_for(category, {action: categoryPath({ category_id: category.ID }), method: "PUT"}) { %>
+  <%= partial("categories/form.html") %>
+  <a href="<%= categoryPath({ category_id: category.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>

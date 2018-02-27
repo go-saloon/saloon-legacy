@@ -1,0 +1,6 @@
+create_table("categories", func(t) {
+	t.Column("id", "uuid", {"primary": true})
+	t.Column("title", "string", {})
+	t.Column("description", "string", {"null": true})
+	t.Column("parent_category", "uuid", {"null": true})
+})
