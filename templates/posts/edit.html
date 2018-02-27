@@ -1,0 +1,8 @@
+<div class="page-header">
+  <h1>Edit Post</h1>
+</div>
+
+<%= form_for(post, {action: postPath({ post_id: post.ID }), method: "PUT"}) { %>
+  <%= partial("posts/form.html") %>
+  <a href="<%= postPath({ post_id: post.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>
