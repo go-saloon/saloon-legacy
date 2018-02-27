@@ -1,0 +1,41 @@
+<div class="page-header">
+  <h1>Users</h1>
+</div>
+<ul class="list-unstyled list-inline">
+  <li><a href="<%= newUsersPath() %>" class="btn btn-primary">Create New User</a></li>
+</ul>
+
+<table class="table table-striped">
+  <thead>
+  <th>User</th>
+    <th>Email</th>
+    <th>PasswordHash</th>
+    <th>FirstName</th>
+    <th>LastName</th>
+    <th>Admin</th>
+    <th>&nbsp;</th>
+  </thead>
+  <tbody>
+    <%= for (user) in users { %>
+      <tr>
+      <td><%= user.User %></td>
+        <td><%= user.Email %></td>
+        <td><%= user.PasswordHash %></td>
+        <td><%= user.FirstName %></td>
+        <td><%= user.LastName %></td>
+        <td><%= user.Admin %></td>
+        <td>
+          <div class="pull-right">
+            <a href="<%= userPath({ user_id: user.ID }) %>" class="btn btn-info">View</a>
+            <a href="<%= editUserPath({ user_id: user.ID }) %>" class="btn btn-warning">Edit</a>
+            <a href="<%= userPath({ user_id: user.ID }) %>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger">Destroy</a>
+          </div>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<div class="text-center">
+  <%= paginator(pagination) %>
+</div>
