@@ -27,44 +27,50 @@ var T *i18n.Translator
 // should be defined. This is the nerve center of your
 // application.
 func App() *buffalo.App {
-	if app == nil {
-		app = buffalo.New(buffalo.Options{
-			Env:         ENV,
-			SessionName: "_saloon_session",
-		})
-		// Automatically redirect to SSL
-		app.Use(ssl.ForceSSL(secure.Options{
-			SSLRedirect:     ENV == "production",
-			SSLProxyHeaders: map[string]string{"X-Forwarded-Proto": "https"},
-		}))
-
-		if ENV == "development" {
-			app.Use(middleware.ParameterLogger)
-		}
-
-		// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
-		// Remove to disable this.
-		app.Use(csrf.New)
-
-		// Wraps each request in a transaction.
-		//  c.Value("tx").(*pop.PopTransaction)
-		// Remove to disable this.
-		app.Use(middleware.PopTransaction(models.DB))
-
-		// Setup and use translations:
-		var err error
-		if T, err = i18n.New(packr.NewBox("../locales"), "en-US"); err != nil {
-			app.Stop(err)
-		}
-		app.Use(T.Middleware())
-
-		app.GET("/", HomeHandler)
-
-		app.ServeFiles("/assets", assetsBox)
-		app.Resource("/users", UsersResource{})
-		app.Resource("/categories", CategoriesResource{})
-		app.Resource("/posts", PostsResource{})
+	if app != nil {
+		return app
 	}
+
+	app = buffalo.New(buffalo.Options{
+		Env:         ENV,
+		SessionName: "_saloon_session",
+	})
+	// Automatically redirect to SSL
+	app.Use(ssl.ForceSSL(secure.Options{
+		SSLRedirect:     ENV == "production",
+		SSLProxyHeaders: map[string]string{"X-Forwarded-Proto": "https"},
+	}))
+
+	if ENV == "development" {
+		app.Use(middleware.ParameterLogger)
+	}
+
+	// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
+	// Remove to disable this.
+	app.Use(csrf.New)
+
+	// Wraps each request in a transaction.
+	//  c.Value("tx").(*pop.PopTransaction)
+	// Remove to disable this.
+	app.Use(middleware.PopTransaction(models.DB))
+
+	// Setup and use translations:
+	var err error
+	if T, err = i18n.New(packr.NewBox("../locales"), "en-US"); err != nil {
+		app.Stop(err)
+	}
+	app.Use(T.Middleware())
+
+	app.GET("/", HomeHandler)
+
+	app.ServeFiles("/assets", assetsBox)
+
+	auth := app.Group("/users")
+	auth.GET("/register", UsersRegisterGet)
+	auth.POST("/register", UsersRegisterPost)
+
+	app.Resource("/categories", CategoriesResource{})
+	app.Resource("/posts", PostsResource{})
 
 	return app
 }
