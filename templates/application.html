@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Buffalo - Saloon</title>
+		<title>Saloon</title>
 		<%= stylesheetTag("application.css") %>
 		<meta name="csrf-param" content="authenticity_token" />
 		<meta name="csrf-token" content="<%= authenticity_token %>" />
@@ -26,12 +26,21 @@
 						</li>
 					</ul>
 					<ul class="navbar-nav">
+						<%= if (current_user) { %>
 						<li class="nav-item">
-							<a href="#" class="nav-link">Login</a>
+							<a href="<%= usersSettingsPath() %>" class="nav-link">Settings</a>
+						</li>
+						<li class="nav-item">
+							<a href="<%= usersLogoutPath() %>" class="nav-link">Logout</a>
+						</li>
+						<% } else { %>
+						<li class="nav-item">
+							<a href="<%= usersLoginPath() %>" class="nav-link">Login</a>
 						</li>
 						<li class="nav-item">
 							<a href="<%= usersRegisterPath() %>" class="nav-link">Register</a>
 						</li>
+						<% } %>
 					</ul>
 				</div>
 			</nav>
@@ -39,6 +48,13 @@
 			<%= partial("flash.html") %>
 			<%= yield %>
 		</div>
+		<footer class="footer text-center fixed-bottom">
+			<div>
+				<ul class="list-inline">
+					<li class="text-muted">Saloon &copy; 2018</li>
+				</ul>
+			</div>
+		</footer>
 		<%= javascriptTag("application.js") %>
 	</body>
 </html>

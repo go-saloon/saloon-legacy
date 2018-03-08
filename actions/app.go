@@ -54,6 +54,9 @@ func App() *buffalo.App {
 	// Remove to disable this.
 	app.Use(middleware.PopTransaction(models.DB))
 
+	// middleware to set a current_user_id session
+	app.Use(SetCurrentUser)
+
 	// Setup and use translations:
 	var err error
 	if T, err = i18n.New(packr.NewBox("../locales"), "en-US"); err != nil {
@@ -68,6 +71,10 @@ func App() *buffalo.App {
 	auth := app.Group("/users")
 	auth.GET("/register", UsersRegisterGet)
 	auth.POST("/register", UsersRegisterPost)
+	auth.GET("/login", UsersLoginGet)
+	auth.POST("/login", UsersLoginPost)
+	auth.GET("/logout", UsersLogout)
+	auth.GET("/settings", UsersSettingsGet)
 
 	app.Resource("/categories", CategoriesResource{})
 	app.Resource("/posts", PostsResource{})
