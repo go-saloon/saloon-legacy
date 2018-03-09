@@ -1,7 +1,0 @@
-create_table("posts", func(t) {
-	t.Column("id", "uuid", {"primary": true})
-	t.Column("title", "string", {})
-	t.Column("content", "string", {})
-	t.Column("author", "uuid", {})
-	t.Column("parent", "uuid", {"null": true})
-})
