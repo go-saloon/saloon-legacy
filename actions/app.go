@@ -85,6 +85,11 @@ func App() *buffalo.App {
 		topicGroup.GET("/detail/{tid}", TopicsDetail)
 		topicGroup.GET("/create", TopicsCreateGet)
 		topicGroup.POST("/create", TopicsCreatePost)
+
+		replyGroup := app.Group("/replies")
+		replyGroup.GET("/replies/create", RepliesCreate)
+		replyGroup.GET("/replies/edit", RepliesEdit)
+		replyGroup.GET("/replies/delete", RepliesDelete)
 	}
 
 	return app

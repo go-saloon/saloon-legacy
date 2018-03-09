@@ -1,0 +1,6 @@
+create_table("replies", func(t) {
+	t.Column("id", "uuid", {"primary": true})
+	t.Column("author_id", "uuid", {})
+	t.Column("topic_id", "uuid", {})
+	t.Column("content", "text", {})
+})
