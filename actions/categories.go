@@ -24,6 +24,72 @@ type CategoriesResource struct {
 	buffalo.Resource
 }
 
+func CategoriesIndex(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	cats := &models.Categories{}
+	// Paginate results. Params "page" and "per_page" control pagination.
+	// Default values are "page=1" and "per_page=20".
+	q := tx.PaginateFromParams(c.Params())
+	// Retrieve all Categories from the DB
+	if err := q.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	// Make categories available inside the html template
+	c.Set("categories", cats)
+	// Add the paginator to the context so it can be used in the template.
+	c.Set("pagination", q.Paginator)
+	return c.Render(200, r.HTML("categories/index.html"))
+}
+
+func CategoriesCreateGet(c buffalo.Context) error {
+	c.Set("category", &models.Category{})
+	return c.Render(200, r.HTML("categories/create"))
+}
+
+func CategoriesCreatePost(c buffalo.Context) error {
+	// Allocate an empty Category
+	cat := &models.Category{}
+	// Bind post to the html form elements
+	if err := c.Bind(cat); err != nil {
+		return errors.WithStack(err)
+	}
+	// Get the DB connection from the context
+	tx := c.Value("tx").(*pop.Connection)
+	// Validate the data from the html form
+	verrs, err := tx.ValidateAndCreate(cat)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	if verrs.HasAny() {
+		c.Set("category", cat)
+		c.Set("errors", verrs.Errors)
+		return c.Render(422, r.HTML("categories/create"))
+	}
+	// If there are no errors set a success message
+	c.Flash().Add("success", "New category added successfully.")
+	// and redirect to the index page
+	return c.Redirect(302, "/")
+}
+
+// CategoriesDetail displays the list of topics in a category
+func CategoriesDetail(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	cat := &models.Category{}
+	if err := tx.Find(cat, c.Param("cid")); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("category", cat)
+	topics := &models.Topics{}
+	if err := tx.BelongsTo(cat).All(topics); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("topics", topics)
+	topic := &models.Topic{}
+	c.Set("topic", topic)
+	return c.Render(200, r.HTML("categories/detail"))
+}
+
+/*
 // List gets all Categories. This function is mapped to the path
 // GET /categories
 func (v CategoriesResource) List(c buffalo.Context) error {
@@ -220,3 +286,4 @@ func (v CategoriesResource) Destroy(c buffalo.Context) error {
 	// Redirect to the categories index page
 	return c.Redirect(302, "/categories")
 }
+*/
