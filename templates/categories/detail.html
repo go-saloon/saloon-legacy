@@ -19,22 +19,9 @@
 </div>
 <div class="row mt-3 justify-content-center">
 	<div class="col-md-8 col-sm-10">
-		<h2>Create a new topic</h2>
-		<form action="<%= topicsCreatePath() %>" method="POST">
-			<%= csrf() %>
-			<div class="form-group">
-				<label for="title">Title</label>
-				<input type="text" name="Title" class="form-control" id="title" value="<%= topic.Title %>">
-			</div>
-			<div class="form-group">
-				<label for="content">Content</label>
-				<textarea class="form-control" name="Content" id="content"  rows="20"><%= topic.Content %></textarea>
-			</div>
-			<button type="submit" class="btn btn-primary">Create</button>
-		</form>
+		<a href="<%= topicsCreatePath({cid: category.ID}) %>" class="btn btn-danger btn-sm m-0">New Topic</a>
 	</div>
 </div>
-
 <div class="row">
 	<div class="col-md-8 offset-md-2">
 		<%= for (t) in topics { %>
