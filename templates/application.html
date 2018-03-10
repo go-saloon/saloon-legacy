@@ -28,10 +28,10 @@
 					<ul class="navbar-nav">
 						<%= if (current_user) { %>
 						<li class="nav-item">
-							<a href="<%= usersSettingsPath() %>" class="nav-link">Settings</a>
+							<a href="<%= usersLogoutPath() %>" class="nav-link">Logout</a>
 						</li>
 						<li class="nav-item">
-							<a href="<%= usersLogoutPath() %>" class="nav-link">Logout</a>
+							<a href="<%= usersSettingsPath() %>" class="nav-link"><%= current_user.Username %></a>
 						</li>
 						<% } else { %>
 						<li class="nav-item">
