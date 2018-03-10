@@ -54,12 +54,22 @@ func TopicsCreatePost(c buffalo.Context) error {
 }
 
 // TopicsEdit default implementation.
-func TopicsEdit(c buffalo.Context) error {
+func TopicsEditGet(c buffalo.Context) error {
+	return c.Render(200, r.HTML("topics/edit.html"))
+}
+
+// TopicsEdit default implementation.
+func TopicsEditPost(c buffalo.Context) error {
 	return c.Render(200, r.HTML("topics/edit.html"))
 }
 
 // TopicsDelete default implementation.
-func TopicsDelete(c buffalo.Context) error {
+func TopicsDeleteGet(c buffalo.Context) error {
+	return c.Render(200, r.HTML("topics/delete.html"))
+}
+
+// TopicsDelete default implementation.
+func TopicsDeletePost(c buffalo.Context) error {
 	return c.Render(200, r.HTML("topics/delete.html"))
 }
 

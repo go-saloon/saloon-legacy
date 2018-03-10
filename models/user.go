@@ -40,6 +40,10 @@ func (u User) String() string {
 	return string(ju)
 }
 
+func (u User) IsAuthor(id uuid.UUID) bool {
+	return u.ID.String() == id.String()
+}
+
 // Users is not required by pop and may be deleted
 type Users []User
 

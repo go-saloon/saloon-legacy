@@ -26,12 +26,12 @@
 	<div class="col-md-8 offset-md-2">
 		<%= for (t) in topics { %>
 		<hr>
-		<p class="author"><%= t.Author.Username %></p>
+		<p class="author"><%= t.AuthorID %></p>
 		<p style="white-space: pre-wrap;"><%= t.Title %></p>
 		<!-- Emails are unique, and '==' does not work with UUIDs -->
-		<%= if (current_user.Email == t.Author.Email) { %>
+		<%= if (current_user.IsAuthor(t.AuthorID)) { %>
 		<a href="<%= topicsDeletePath({tid: t.ID}) %>" class="btn btn-danger btn-sm m-0">Delete topic</a>
-		<a href="<%= topicsEditPath({tid: t.ID}) %>" class="btn btn-primary btn-sm m-0">Edit topic</a>
+		<a href="<%= editTopicsPath({tid: t.ID}) %>" class="btn btn-primary btn-sm m-0">Edit topic</a>
 		<% } %>
 		<% } %>
 	</div>
