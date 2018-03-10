@@ -16,6 +16,7 @@ import (
 
 var _ = grift.Namespace("db", func() {
 
+	grift.Desc("setup", "Initial db setup")
 	grift.Add("setup", func(c *grift.Context) error {
 		for _, name := range []string{
 			"db:setup:create-admin",

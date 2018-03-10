@@ -5,6 +5,8 @@
 package grifts
 
 import (
+	"github.com/go-saloon/saloon/models"
+	"github.com/gobuffalo/pop"
 	. "github.com/markbates/grift/grift"
 )
 
@@ -12,7 +14,8 @@ var _ = Namespace("db", func() {
 
 	Desc("reset", "Reset database")
 	Add("reset", func(c *Context) error {
-		return nil
+		return models.DB.Transaction(func(tx *pop.Connection) error {
+			return tx.TruncateAll()
+		})
 	})
-
 })
