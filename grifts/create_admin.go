@@ -5,16 +5,39 @@
 package grifts
 
 import (
-	. "github.com/markbates/grift/grift"
+	"fmt"
+
+	"github.com/go-saloon/saloon/models"
+	"github.com/gobuffalo/pop"
+	"github.com/markbates/grift/grift"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
-var _ = Namespace("db", func() {
+var _ = grift.Namespace("db", func() {
 
-	Namespace("setup", func() {
+	grift.Namespace("setup", func() {
 
-		Desc("create_admin", "Create a default admin account")
-		Add("create_admin", func(c *Context) error {
-			return nil
+		grift.Desc("create-admin", "Create a default admin account")
+		grift.Add("create-admin", func(c *grift.Context) error {
+			return models.DB.Transaction(func(tx *pop.Connection) error {
+				err := tx.TruncateAll()
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				usr := &models.User{
+					Username: "admin",
+					Email:    "admin@example.com",
+					Password: "admin",
+					Admin:    true,
+				}
+				pwd, err := bcrypt.GenerateFromPassword([]byte(usr.Password), bcrypt.DefaultCost)
+				if err != nil {
+					return fmt.Errorf("could not generate password hash: %v", err)
+				}
+				usr.PasswordHash = string(pwd)
+				return tx.Create(usr)
+			})
 		})
 
 	})
