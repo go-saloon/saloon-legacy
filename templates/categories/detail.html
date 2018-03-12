@@ -31,7 +31,7 @@
 		<a href="<%= topicsDetailPath({tid: t.ID}) %>"><%= t.Title %></a>
 	</div>
 	<div class="col-md-2">authors</div>
-	<div class="col-md-1"><%= len(replies(t.ID)) %></div>
+	<div class="col-md-1"><%= len(t.Replies) %></div>
 	<div class="col-md-3 text-right">
 		<%= if (current_user.IsAuthor(t.AuthorID) || current_user.Admin){ %>
 		<a href="<%= topicsDeletePath({tid: t.ID}) %>" class="btn btn-danger btn-sm m-0 fa fa-trash"></a>

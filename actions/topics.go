@@ -38,6 +38,7 @@ func TopicsCreatePost(c buffalo.Context) error {
 		return c.Error(404, err)
 	}
 	topic.AuthorID = user.ID
+	topic.Author = user
 	topic.CategoryID = cat.ID
 	// Validate the data from the html form
 	verrs, err := tx.ValidateAndCreate(topic)
@@ -93,12 +94,13 @@ func TopicsDetail(c buffalo.Context) error {
 	if err := tx.Find(author, topic.AuthorID); err != nil {
 		return c.Error(404, err)
 	}
-	c.Set("author", author)
+	topic.Author = author
 	q := tx.PaginateFromParams(c.Params())
 	replies := new(models.Replies)
 	if err := q.BelongsTo(topic).All(replies); err != nil {
 		return c.Error(404, err)
 	}
+	topic.Replies = *replies
 	c.Set("replies", replies)
 	c.Set("pagination", q.Paginator)
 	return c.Render(200, r.HTML("topics/detail"))

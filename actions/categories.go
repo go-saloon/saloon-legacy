@@ -84,6 +84,19 @@ func CategoriesDetail(c buffalo.Context) error {
 		return c.Error(404, err)
 	}
 	c.Set("topics", topics)
+	for i := range *topics {
+		topic := &(*topics)[i]
+		author := new(models.User)
+		if err := tx.Find(author, topic.AuthorID); err != nil {
+			return c.Error(404, err)
+		}
+		topic.Author = author
+		replies := new(models.Replies)
+		if err := tx.BelongsTo(topic).All(replies); err != nil {
+			return c.Error(404, err)
+		}
+		topic.Replies = *replies
+	}
 	topic := &models.Topic{}
 	c.Set("topic", topic)
 	return c.Render(200, r.HTML("categories/detail"))

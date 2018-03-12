@@ -37,7 +37,6 @@ func init() {
 			"categoryTitle": categoryTitle,
 			"topicTitle":    topicTitle,
 			"timeSince":     timeSince,
-			"replies":       replies,
 		},
 	})
 }
@@ -90,17 +89,4 @@ func timeSince(created time.Time, ctx plush.HelperContext) string {
 		return fmt.Sprintf("%dm", int(delta.Minutes()))
 	}
 	return fmt.Sprintf("%ds", int(delta.Seconds()))
-}
-
-func replies(id uuid.UUID, ctx plush.HelperContext) models.Replies {
-	tx := ctx.Value("tx").(*pop.Connection)
-	topic := new(models.Topic)
-	if err := tx.Find(topic, id); err != nil {
-		return nil
-	}
-	replies := new(models.Replies)
-	if err := tx.BelongsTo(topic).All(replies); err != nil {
-		return nil
-	}
-	return *replies
 }
