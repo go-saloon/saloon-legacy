@@ -2,7 +2,10 @@
 	<h2 class="col-md-10"><%= topic.Title %>   </h2>
 </div>
 <div class="row">
-	<h4 class="col-md-2"> <%= category.Title %></h4>
+	<h4 class="col-md-2">
+		<a href="<%= categoriesDetailPath({cid: topic.CategoryID}) %>" class="text-secondary"> <%= category.Title %>
+		</a>
+	</h4>
 </div>
 <hr class="col-md-12 ml-2">
 <div class="row">
