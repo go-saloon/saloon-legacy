@@ -84,5 +84,22 @@ func TopicsDetail(c buffalo.Context) error {
 		return c.Error(404, err)
 	}
 	c.Set("topic", topic)
+	cat := new(models.Category)
+	if err := tx.Find(cat, topic.CategoryID); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("category", cat)
+	author := new(models.User)
+	if err := tx.Find(author, topic.AuthorID); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("author", author)
+	q := tx.PaginateFromParams(c.Params())
+	replies := new(models.Replies)
+	if err := q.BelongsTo(topic).All(replies); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("replies", replies)
+	c.Set("pagination", q.Paginator)
 	return c.Render(200, r.HTML("topics/detail"))
 }

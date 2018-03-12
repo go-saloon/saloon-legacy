@@ -13,22 +13,20 @@ import (
 	"github.com/gobuffalo/validate/validators"
 )
 
-type Topic struct {
-	ID         uuid.UUID `json:"id" db:"id"`
-	CreatedAt  time.Time `json:"created_at" db:"created_at,utc"`
-	UpdatedAt  time.Time `json:"updated_at" db:"updated_at,utc"`
-	Title      string    `json:"title" db:"title"`
-	Content    string    `json:"content" db:"content"`
-	AuthorID   uuid.UUID `json:"author_id" db:"author_id"`
-	CategoryID uuid.UUID `json:"category_id" db:"category_id"`
+type Reply struct {
+	ID        uuid.UUID `json:"id" db:"id"`
+	CreatedAt time.Time `json:"created_at" db:"created_at,utc"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at,utc"`
+	AuthorID  uuid.UUID `json:"author_id" db:"author_id"`
+	TopicID   uuid.UUID `json:"topic_id" db:"topic_id"`
+	Content   string    `json:"content" db:"content"`
 }
 
-type Topics []Topic
+type Replies []Reply
 
 // Validate gets run every time you call a "pop.Validate*" (pop.ValidateAndSave, pop.ValidateAndCreate, pop.ValidateAndUpdate) method.
-func (p *Topic) Validate(tx *pop.Connection) (*validate.Errors, error) {
+func (p *Reply) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.Validate(
-		&validators.StringIsPresent{Field: p.Title, Name: "Title"},
 		&validators.StringIsPresent{Field: p.Content, Name: "Content"},
 	), nil
 }

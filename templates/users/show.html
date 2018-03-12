@@ -1,28 +1,19 @@
 <div class="page-header">
-  <h1>User#Show</h1>
+	<h1>User#Show</h1>
 </div>
 
-<ul class="list-unstyled list-inline">
-  <li><a href="<%= usersPath() %>" class="btn btn-info">Back to all Users</a></li>
-  <li><a href="<%= editUserPath({ user_id: user.ID })%>" class="btn btn-warning">Edit</a></li>
-  <li><a href="<%= userPath({ user_id: user.ID })%>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger">Destroy</a>
-</ul>
-
 <p>
-  <strong>Username</strong>: <%= user.Username %>
+<strong>Username</strong>: <%= user.Username %>
 </p>
 <p>
-  <strong>Email</strong>: <%= user.Email %>
+<strong>Email</strong>: <%= user.Email %>
 </p>
 <p>
-  <strong>PasswordHash</strong>: <%= user.PasswordHash %>
+<strong>FirstName</strong>: <%= user.FirstName %>
 </p>
 <p>
-  <strong>FirstName</strong>: <%= user.FirstName %>
+<strong>LastName</strong>: <%= user.LastName %>
 </p>
 <p>
-  <strong>LastName</strong>: <%= user.LastName %>
-</p>
-<p>
-  <strong>Admin</strong>: <%= user.Admin %>
+<strong>Admin</strong>: <%= user.Admin %>
 </p>

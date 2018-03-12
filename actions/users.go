@@ -105,6 +105,21 @@ func UsersSettingsGet(c buffalo.Context) error {
 	return c.Render(200, r.HTML("users/settings"))
 }
 
+func UsersShow(c buffalo.Context) error {
+	user := &models.User{}
+	uid := c.Param("uid")
+	if uid == "" {
+		uid = c.Session().Get("current_user_id").(string)
+	}
+	tx := c.Value("tx").(*pop.Connection)
+	if err := tx.Find(user, uid); err != nil {
+		return errors.WithStack(err)
+	}
+
+	c.Set("user", user)
+	return c.Render(200, r.HTML("users/show"))
+}
+
 // AdminRequired requires a user to be logged in and to be an admin before accessing a route.
 func AdminRequired(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {

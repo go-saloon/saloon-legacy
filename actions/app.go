@@ -9,6 +9,7 @@ import (
 	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/buffalo/middleware/ssl"
 	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/pop/fizz"
 	"github.com/unrolled/secure"
 
 	"github.com/go-saloon/saloon/models"
@@ -73,6 +74,7 @@ func App() *buffalo.App {
 		auth.POST("/login", UsersLoginPost)
 		auth.GET("/logout", UsersLogout)
 		auth.GET("/settings", UserRequired(UsersSettingsGet))
+		auth.GET("/show", UserRequired(UsersShow))
 
 		catGroup := app.Group("/categories")
 		catGroup.Use(UserRequired)
@@ -94,10 +96,17 @@ func App() *buffalo.App {
 
 		replyGroup := app.Group("/replies")
 		replyGroup.Use(UserRequired)
-		replyGroup.GET("/replies/create", RepliesCreate)
-		replyGroup.GET("/replies/edit", RepliesEdit)
-		replyGroup.GET("/replies/delete", RepliesDelete)
+		replyGroup.GET("/create", RepliesCreateGet)
+		replyGroup.POST("/create", RepliesCreatePost)
+		replyGroup.GET("/edit", RepliesEdit)
+		replyGroup.GET("/delete", RepliesDelete)
+		replyGroup.GET("/detail", RepliesDetail)
 	}
 
 	return app
+}
+
+func init() {
+	fizz.CREATED_COL.ColType = "timestamp with timezone" // Column{Name: "created_at", ColType: "timestamp", Options: Options{}}
+	fizz.UPDATED_COL.ColType = "timestamp with timezone" //, Options: Options{}}
 }

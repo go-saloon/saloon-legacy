@@ -1,1 +1,8 @@
-<h1>Replies#Edit</h1>
+<div class="page-header">
+	<h1>Edit Reply</h1>
+</div>
+
+<%= form_for(reply, {action: replyPath({ reply_id: reply.ID }), method: "PUT"}) { %>
+<%= partial("replies/form.html") %>
+<a href="<%= replyPath({ reply_id: reply.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>

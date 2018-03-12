@@ -12,29 +12,29 @@
 		<% } %>
 	</div>
 </div>
-<div class="row">
-	<div class="col-md-8 offset-md-2">
-		<h1 class="text-center"><%= category.Title %></h1>
-	</div>
-</div>
 <div class="row mt-3 justify-content-center">
-	<div class="col-md-8 col-sm-10">
-		<a href="<%= topicsCreatePath({cid: category.ID}) %>" class="btn btn-danger btn-sm m-0">New Topic</a>
+	<div class="col-md-8 col-sm-8">
+		<h2 href="#"><%= category.Title %></h2>
+	</div>
+	<div class="col-md-4 col-sm-4 text-right">
+		<a href="<%= topicsCreatePath({cid: category.ID}) %>" class="btn btn-primary btn-sm m-0">New Topic</a>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-8 offset-md-2">
-		<%= for (t) in topics { %>
-		<hr>
-		<p class="author"><%= t.AuthorID %></p>
-		<p style="white-space: pre-wrap;"><%= t.Title %></p>
-		<!-- Emails are unique, and '==' does not work with UUIDs -->
-		<%= if (current_user.IsAuthor(t.AuthorID)) { %>
+	<div class="col-md-8">Topic</div>
+	<div class="col-md-4"></div>
+	<%= for (t) in topics { %>
+	<hr class="col-md-12 col-sm-12">
+	<div class="col-md-8">
+		<a href="<%= topicsDetailPath({tid: t.ID}) %>"><%= t.Title %></a>
+	</div>
+	<div class="col-md-4 text-right">
+		<%= if (current_user.IsAuthor(t.AuthorID) || current_user.Admin){ %>
 		<a href="<%= topicsDeletePath({tid: t.ID}) %>" class="btn btn-danger btn-sm m-0">Delete topic</a>
 		<a href="<%= editTopicsPath({tid: t.ID}) %>" class="btn btn-primary btn-sm m-0">Edit topic</a>
 		<% } %>
-		<% } %>
 	</div>
+	<% } %>
 </div>
 
 

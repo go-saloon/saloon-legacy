@@ -38,7 +38,7 @@ func CategoriesIndex(c buffalo.Context) error {
 	c.Set("categories", cats)
 	// Add the paginator to the context so it can be used in the template.
 	c.Set("pagination", q.Paginator)
-	return c.Render(200, r.HTML("categories/index.html"))
+	return c.Render(200, r.HTML("categories/index"))
 }
 
 func CategoriesCreateGet(c buffalo.Context) error {
@@ -68,7 +68,7 @@ func CategoriesCreatePost(c buffalo.Context) error {
 	// If there are no errors set a success message
 	c.Flash().Add("success", "New category added successfully.")
 	// and redirect to the index page
-	return c.Redirect(302, "/")
+	return c.Redirect(302, "/categories/index")
 }
 
 // CategoriesDetail displays the list of topics in a category

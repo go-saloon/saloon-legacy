@@ -22,8 +22,8 @@ import (
 
 type User struct {
 	ID              uuid.UUID    `json:"id" db:"id"`
-	CreatedAt       time.Time    `json:"created_at" db:"created_at"`
-	UpdatedAt       time.Time    `json:"updated_at" db:"updated_at"`
+	CreatedAt       time.Time    `json:"created_at" db:"created_at,utc"`
+	UpdatedAt       time.Time    `json:"updated_at" db:"updated_at,utc"`
 	Username        string       `json:"username" db:"username"`
 	Email           string       `json:"email" db:"email"`
 	PasswordHash    string       `json:"-" db:"password_hash"`

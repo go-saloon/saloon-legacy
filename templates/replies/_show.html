@@ -1,0 +1,20 @@
+<hr class="col-md-12 ml-2">
+<div class="row">
+	<a class="col-md-1" href="<%= usersShowPath({uid: reply.AuthorID}) %>"> A </a>
+	<a class="col-md-2" href="<%= usersShowPath({uid: reply.AuthorID}) %>"> <%= userName(reply.AuthorID) %></a>
+	<div class="col-md-5"></div>
+	<div class="col-md-2 offset-md-2 text-right"><%= timeSince(reply.CreatedAt) %> </div>
+</div>
+<div class="row">
+	<div class="col-md-8 mt-3 offset-md-1">
+		<%= markdown(reply.Content) %>
+	</div>
+	<div class="col-md-8 mt-3"></div>
+	<div class="col-md-4 mt-3 text-right">
+		<%= if (current_user.IsAuthor(reply.AuthorID) || current_user.Admin){ %>
+		<a href="<%= repliesDeletePath({rid: reply.ID}) %>" class="btn btn-danger btn-sm m-0 fa fa-trash"></a>
+		<a href="<%= editRepliesPath({rid: reply.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-edit"></a>
+		<% } %>
+		<a href="<%= repliesCreatePath({rid: reply.ID, tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-mail-reply"></a>
+	</div>
+</div>

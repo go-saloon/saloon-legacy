@@ -1,1 +1,28 @@
-<h1>Replies#Create</h1>
+<div class="row">
+	<div class="col">
+		<%= if (errors) { %>
+		<%= for (key, val) in errors { %>
+		<div class="alert alert-danger alert-dismissible fade show m-1" role="alert">
+			<%= val %>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<% } %>
+		<% } %>
+	</div>
+</div>
+
+<div class="row mt-3 justify-content-center">
+	<div class="col-md-8 col-sm-10">
+		<h2>Reply</h2>
+		<form action="<%= repliesCreatePath({tid: topic.ID}) %>" method="POST">
+			<%= csrf() %>
+			<div class="form-group">
+				<label for="content">Content</label>
+				<textarea class="form-control" name="Content" id="content"  rows="20"><%= reply.Content %></textarea>
+			</div>
+			<button type="submit" class="btn btn-primary">Publish</button>
+		</form>
+	</div>
+</div>
