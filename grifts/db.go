@@ -11,7 +11,16 @@ var _ = grift.Namespace("db", func() {
 
 	grift.Desc("seed", "Seeds a database")
 	grift.Add("seed", func(c *grift.Context) error {
-		// Add DB seeding stuff here
+		for _, name := range []string{
+			"db:setup",
+			"db:seed:create-forum",
+			"db:seed:create-categories",
+		} {
+			err := grift.Run(name, c)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+		}
 		return nil
 	})
 
@@ -31,4 +40,18 @@ var _ = grift.Namespace("db", func() {
 		})
 	})
 
+	grift.Desc("seed:create-forum", "Create forum welcome message")
+	grift.Add("seed:create-forum", func(c *grift.Context) error {
+		return models.DB.Transaction(func(tx *pop.Connection) error {
+			forum := &models.Forum{
+				Title:       "Alternatiba-63",
+				Description: "a Forum for Alternatiba 63",
+			}
+			err := tx.Create(forum)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			return nil
+		})
+	})
 })

@@ -54,6 +54,7 @@ func App() *buffalo.App {
 
 		// middleware to set a current_user_id session
 		app.Use(SetCurrentUser)
+		app.Use(SetCurrentForum)
 
 		// Setup and use translations:
 		var err error
