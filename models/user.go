@@ -46,6 +46,15 @@ func (u User) IsAuthor(id uuid.UUID) bool {
 	return u.ID.String() == id.String()
 }
 
+func (u User) Subscribed(id uuid.UUID) bool {
+	for _, sub := range u.Subscriptions {
+		if sub == id {
+			return true
+		}
+	}
+	return false
+}
+
 // Users is not required by pop and may be deleted
 type Users []User
 

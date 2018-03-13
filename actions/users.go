@@ -102,6 +102,24 @@ func SetCurrentUser(next buffalo.Handler) buffalo.Handler {
 
 // USerSettingsGet displays the user's informations
 func UsersSettingsGet(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Set("categories", cats)
+	return c.Render(200, r.HTML("users/settings"))
+}
+
+func UsersSettingsPost(c buffalo.Context) error {
+	/*
+		user := &models.User{}
+		// Bind the user to the html form elements
+		if err := c.Bind(user); err != nil {
+			return errors.WithStack(err)
+		}
+		tx := c.Value("tx").(*pop.Connection)
+	*/
 	return c.Render(200, r.HTML("users/settings"))
 }
 
