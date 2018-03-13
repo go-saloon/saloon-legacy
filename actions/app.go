@@ -9,7 +9,6 @@ import (
 	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/buffalo/middleware/ssl"
 	"github.com/gobuffalo/envy"
-	"github.com/gobuffalo/pop/fizz"
 	"github.com/unrolled/secure"
 
 	"github.com/go-saloon/saloon/models"
@@ -104,9 +103,4 @@ func App() *buffalo.App {
 	}
 
 	return app
-}
-
-func init() {
-	fizz.CREATED_COL.ColType = "timestamp with timezone" // Column{Name: "created_at", ColType: "timestamp", Options: Options{}}
-	fizz.UPDATED_COL.ColType = "timestamp with timezone" //, Options: Options{}}
 }
