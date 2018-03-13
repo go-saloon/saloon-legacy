@@ -13,6 +13,7 @@ import (
 
 	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/pop/nulls"
+	"github.com/gobuffalo/pop/slices"
 	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
 	"github.com/gobuffalo/validate/validators"
@@ -32,6 +33,7 @@ type User struct {
 	FirstName       nulls.String `json:"first_name" db:"first_name"`
 	LastName        nulls.String `json:"last_name" db:"last_name"`
 	Admin           bool         `json:"admin" db:"admin"`
+	Subscriptions   slices.UUID  `json:"subscriptions" db:"subscriptions"`
 }
 
 // String is not required by pop and may be deleted
