@@ -21,27 +21,26 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-6">Topic</div>
-	<div class="col-md-2">Users</div>
-	<div class="col-md-1 text-right">Replies</div>
-	<div class="col-md-3"></div>
+	<div class="col-md-8">Topic</div>
+	<div class="col-md-2 text-center">Users</div>
+	<div class="col-md-1 text-center">Replies</div>
+	<div class="col-md-1 text-center">Activity</div>
 </div>
-<%= for (t) in topics { %>
+<%= for (topic) in topics { %>
 <div class="row">
 	<hr class="col-md-12 col-sm-12">
-	<div class="col-md-6">
-		<a href="<%= topicsDetailPath({tid: t.ID}) %>" class="text-secondary">
-			<%= t.Title %>
+	<div class="col-md-8">
+		<a href="<%= topicsDetailPath({tid: topic.ID}) %>" class="text-secondary">
+			<%= topic.Title %>
 		</a>
 	</div>
-	<div class="col-md-2">authors</div>
-	<div class="col-md-1 text-right"><%= len(t.Replies) %></div>
-	<div class="col-md-3 text-right">
-		<%= if (current_user.IsAuthor(t.AuthorID) || current_user.Admin){ %>
-		<a href="<%= topicsDeletePath({tid: t.ID}) %>" class="btn btn-danger btn-sm m-0 fa fa-trash"></a>
-		<a href="<%= editTopicsPath({tid: t.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-edit"></a>
+	<div class="col-md-2 text-center">
+		<%= for (author) in topic.Authors() { %>
+		<span class="text-secondary"><%= author.Username %></span>
 		<% } %>
 	</div>
+	<div class="col-md-1 text-center"><%= len(topic.Replies) %></div>
+	<div class="col-md-1 text-center"><%= timeSince(topic.LastUpdate())  %></div>
 </div>
 <% } %>
 <hr class="col-md-12 col-sm-12">

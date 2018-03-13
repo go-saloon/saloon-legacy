@@ -91,8 +91,6 @@ func CategoriesDetail(c buffalo.Context) error {
 		}
 		(*topics)[i] = *topic
 	}
-	topic := &models.Topic{}
-	c.Set("topic", topic)
 	return c.Render(200, r.HTML("categories/detail"))
 }
 

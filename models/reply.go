@@ -20,6 +20,9 @@ type Reply struct {
 	AuthorID  uuid.UUID `json:"author_id" db:"author_id"`
 	TopicID   uuid.UUID `json:"topic_id" db:"topic_id"`
 	Content   string    `json:"content" db:"content"`
+
+	Author *User  `json:"-" db:"-"`
+	Topic  *Topic `json:"-" db:"-"`
 }
 
 type Replies []Reply

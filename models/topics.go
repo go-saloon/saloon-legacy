@@ -22,9 +22,9 @@ type Topic struct {
 	AuthorID   uuid.UUID `json:"author_id" db:"author_id"`
 	CategoryID uuid.UUID `json:"category_id" db:"category_id"`
 
-	Author   User     `json:"-" db:"-"`
-	Category Category `json:"-" db:"-"`
-	Replies  Replies  `json:"-" db:"-"`
+	Author   *User     `json:"-" db:"-"`
+	Category *Category `json:"-" db:"-"`
+	Replies  Replies   `json:"-" db:"-"`
 }
 
 type Topics []Topic
@@ -35,4 +35,40 @@ func (p *Topic) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		&validators.StringIsPresent{Field: p.Title, Name: "Title"},
 		&validators.StringIsPresent{Field: p.Content, Name: "Content"},
 	), nil
+}
+
+func (t Topic) Authors() Users {
+	var set = make(map[uuid.UUID]User, 1+len(t.Replies))
+	set[t.Author.ID] = *t.Author
+	for _, reply := range t.Replies {
+		_, dup := set[reply.AuthorID]
+		if dup {
+			continue
+		}
+		if reply.Author != nil {
+			set[reply.AuthorID] = *reply.Author
+		}
+	}
+
+	authors := make([]User, 0, len(set))
+	for _, v := range set {
+		authors = append(authors, v)
+	}
+	return Users(authors)
+}
+
+func (t Topic) LastUpdate() time.Time {
+	last := func(a, b time.Time) time.Time {
+		if a.UTC().After(b.UTC()) {
+			return a.UTC()
+		}
+		return b.UTC()
+	}
+
+	v := last(t.CreatedAt, t.UpdatedAt)
+	for _, reply := range t.Replies {
+		v = last(v, reply.CreatedAt)
+		v = last(v, reply.UpdatedAt)
+	}
+	return v
 }

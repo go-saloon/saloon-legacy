@@ -3,25 +3,26 @@
 </div>
 <div class="row">
 	<h4 class="col-md-2">
-		<a href="<%= categoriesDetailPath({cid: topic.CategoryID}) %>" class="text-secondary"> <%= category.Title %>
+		<a href="<%= categoriesDetailPath({cid: topic.CategoryID}) %>" class="text-secondary"> <%= topic.Category.Title %>
 		</a>
 	</h4>
 </div>
-<hr class="col-md-12 ml-2">
+<hr class="col-md-10 ml-2">
 <div class="row">
 	<a class="col-md-1" href="<%= usersShowPath({uid: topic.AuthorID}) %>"> A </a>
-	<a class="col-md-2" href="<%= usersShowPath({uid: topic.AuthorID}) %>"> <%= userName(topic.AuthorID) %></a>
+	<a class="col-md-2" href="<%= usersShowPath({uid: topic.AuthorID}) %>"> <%= topic.Author.Username %></a>
 	<div class="col-md-5"></div>
-	<div class="col-md-2 offset-md-2 text-right"><%= timeSince(topic.CreatedAt) %> </div>
+	<div class="col-md-2 text-right"><%= timeSince(topic.CreatedAt) %> </div>
 </div>
 <div class="row">
 	<div class="col-md-8 mt-3 offset-md-1">
 		<%= markdown(topic.Content) %>
 	</div>
-	<div class="col-md-8 mt-3"></div>
-	<div class="col-md-4 mt-3 text-right">
+	<div class="col-md-2 mt-3 offset-md-8 text-right">
 		<%= if (current_user.IsAuthor(topic.AuthorID) || current_user.Admin){ %>
+		<%= if (len(topic.Replies) == 0) { %>
 		<a href="<%= topicsDeletePath({tid: topic.ID}) %>" class="btn btn-danger btn-sm m-0 fa fa-trash"></a>
+		<% } %>
 		<a href="<%= editTopicsPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-edit"></a>
 		<% } %>
 		<a href="<%= repliesCreatePath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-mail-reply"></a>
@@ -30,4 +31,4 @@
 <%= for (reply) in replies { %>
 <%= partial("replies/show.html") %>
 <% } %>
-<hr class="col-md-12 ml-2">
+<hr class="col-md-10 ml-2">

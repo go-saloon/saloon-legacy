@@ -29,13 +29,15 @@ func TopicsCreateGet(c buffalo.Context) error {
 func TopicsCreatePost(c buffalo.Context) error {
 	tx := c.Value("tx").(*pop.Connection)
 	topic := &models.Topic{}
-	topic.Author = *c.Value("current_user").(*models.User)
+	topic.Author = c.Value("current_user").(*models.User)
 	if err := c.Bind(topic); err != nil {
 		return errors.WithStack(err)
 	}
-	if err := tx.Find(&topic.Category, c.Param("cid")); err != nil {
+	cat := new(models.Category)
+	if err := tx.Find(cat, c.Param("cid")); err != nil {
 		return c.Error(404, err)
 	}
+	topic.Category = cat
 	topic.AuthorID = topic.Author.ID
 	topic.CategoryID = topic.Category.ID
 	// Validate the data from the html form
@@ -79,7 +81,7 @@ func TopicsDetail(c buffalo.Context) error {
 		return errors.WithStack(err)
 	}
 	c.Set("topic", topic)
-	c.Set("category", &topic.Category)
+	c.Set("category", topic.Category)
 	c.Set("replies", &topic.Replies)
 	return c.Render(200, r.HTML("topics/detail"))
 }
@@ -93,14 +95,25 @@ func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {
 	if err := tx.Find(topic, tid); err != nil {
 		return nil, c.Error(404, err)
 	}
-	if err := tx.Find(&topic.Category, topic.CategoryID); err != nil {
+	cat := new(models.Category)
+	if err := tx.Find(cat, topic.CategoryID); err != nil {
 		return nil, c.Error(404, err)
 	}
-	if err := tx.Find(&topic.Author, topic.AuthorID); err != nil {
+	usr := new(models.User)
+	if err := tx.Find(usr, topic.AuthorID); err != nil {
 		return nil, c.Error(404, err)
 	}
 	if err := tx.BelongsTo(topic).All(&topic.Replies); err != nil {
 		return nil, c.Error(404, err)
+	}
+	topic.Category = cat
+	topic.Author = usr
+	for i := range topic.Replies {
+		reply, err := loadReply(c, topic.Replies[i].ID.String())
+		if err != nil {
+			return nil, c.Error(404, err)
+		}
+		topic.Replies[i] = *reply
 	}
 	return topic, nil
 }

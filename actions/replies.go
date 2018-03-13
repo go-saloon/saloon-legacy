@@ -17,6 +17,8 @@ func RepliesCreateGet(c buffalo.Context) error {
 	c.Set("reply", reply)
 	c.Set("topic", topic)
 	reply.TopicID = topic.ID
+	reply.Topic = topic
+	reply.Author = c.Value("current_user").(*models.User)
 	return c.Render(200, r.HTML("replies/create.html"))
 }
 
@@ -33,7 +35,9 @@ func RepliesCreatePost(c buffalo.Context) error {
 	}
 	c.Set("topic", topic)
 	reply.AuthorID = user.ID
+	reply.Author = user
 	reply.TopicID = topic.ID
+	reply.Topic = topic
 
 	verrs, err := tx.ValidateAndCreate(reply)
 	if err != nil {
@@ -72,4 +76,26 @@ func RepliesDetail(c buffalo.Context) error {
 	c.Set("topic", topic)
 	c.Set("replies", replies)
 	return c.Render(200, r.HTML("replies/detail"))
+}
+
+func loadReply(c buffalo.Context, id string) (*models.Reply, error) {
+	tx := c.Value("tx").(*pop.Connection)
+	reply := &models.Reply{}
+	if err := c.Bind(reply); err != nil {
+		return nil, errors.WithStack(err)
+	}
+	if err := tx.Find(reply, id); err != nil {
+		return nil, c.Error(404, err)
+	}
+	topic := new(models.Topic)
+	if err := tx.Find(topic, reply.TopicID); err != nil {
+		return nil, c.Error(404, err)
+	}
+	usr := new(models.User)
+	if err := tx.Find(usr, reply.AuthorID); err != nil {
+		return nil, c.Error(404, err)
+	}
+	reply.Topic = topic
+	reply.Author = usr
+	return reply, nil
 }
