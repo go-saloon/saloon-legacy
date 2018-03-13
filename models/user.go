@@ -22,18 +22,19 @@ import (
 )
 
 type User struct {
-	ID              uuid.UUID    `json:"id" db:"id"`
-	CreatedAt       time.Time    `json:"created_at" db:"created_at,utc"`
-	UpdatedAt       time.Time    `json:"updated_at" db:"updated_at,utc"`
-	Username        string       `json:"username" db:"username"`
-	Email           string       `json:"email" db:"email"`
-	PasswordHash    string       `json:"-" db:"password_hash"`
-	Password        string       `json:"-" db:"-"`
-	PasswordConfirm string       `json:"-" db:"-"`
-	FirstName       nulls.String `json:"first_name" db:"first_name"`
-	LastName        nulls.String `json:"last_name" db:"last_name"`
-	Admin           bool         `json:"admin" db:"admin"`
-	Subscriptions   slices.UUID  `json:"subscriptions" db:"subscriptions"`
+	ID              uuid.UUID       `json:"id" db:"id"`
+	CreatedAt       time.Time       `json:"created_at" db:"created_at"`
+	UpdatedAt       time.Time       `json:"updated_at" db:"updated_at"`
+	Username        string          `json:"username" db:"username"`
+	Email           string          `json:"email" db:"email"`
+	PasswordHash    string          `json:"-" db:"password_hash"`
+	Password        string          `json:"-" db:"-"`
+	PasswordConfirm string          `json:"-" db:"-"`
+	FirstName       nulls.String    `json:"first_name" db:"first_name"`
+	LastName        nulls.String    `json:"last_name" db:"last_name"`
+	Avatar          nulls.ByteSlice `json:"avatar" db:"avatar"`
+	Admin           bool            `json:"admin" db:"admin"`
+	Subscriptions   slices.UUID     `json:"subscriptions" db:"subscriptions"`
 }
 
 // String is not required by pop and may be deleted

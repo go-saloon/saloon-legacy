@@ -5,6 +5,7 @@ create_table("users", func(t) {
 	t.Column("password_hash", "string", {})
 	t.Column("first_name", "string", {"null": true})
 	t.Column("last_name", "string", {"null": true})
+	t.Column("avatar", "bytea", {"null": true})
 	t.Column("admin", "bool", {})
 	t.Column("subscriptions", "varchar[]", {"null": true})
 })
