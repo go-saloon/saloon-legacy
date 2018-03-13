@@ -10,6 +10,7 @@ import (
 
 	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/pop/nulls"
+	"github.com/gobuffalo/pop/slices"
 	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
 	"github.com/gobuffalo/validate/validators"
@@ -22,6 +23,7 @@ type Category struct {
 	Title          string       `json:"title" db:"title"`
 	Description    nulls.String `json:"description" db:"description"`
 	ParentCategory nulls.UUID   `json:"parent_category" db:"parent_category"`
+	Subscribers    slices.UUID  `json:"subscribers" db:"subscribers"`
 }
 
 // String is not required by pop and may be deleted
