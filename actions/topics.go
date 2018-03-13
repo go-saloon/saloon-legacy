@@ -29,17 +29,15 @@ func TopicsCreateGet(c buffalo.Context) error {
 func TopicsCreatePost(c buffalo.Context) error {
 	tx := c.Value("tx").(*pop.Connection)
 	topic := &models.Topic{}
-	user := c.Value("current_user").(*models.User)
+	topic.Author = *c.Value("current_user").(*models.User)
 	if err := c.Bind(topic); err != nil {
 		return errors.WithStack(err)
 	}
-	cat := &models.Category{}
-	if err := tx.Find(cat, c.Param("cid")); err != nil {
+	if err := tx.Find(&topic.Category, c.Param("cid")); err != nil {
 		return c.Error(404, err)
 	}
-	topic.AuthorID = user.ID
-	topic.Author = user
-	topic.CategoryID = cat.ID
+	topic.AuthorID = topic.Author.ID
+	topic.CategoryID = topic.Category.ID
 	// Validate the data from the html form
 	verrs, err := tx.ValidateAndCreate(topic)
 	if err != nil {
@@ -76,32 +74,33 @@ func TopicsDeletePost(c buffalo.Context) error {
 
 // TopicsDetail default implementation.
 func TopicsDetail(c buffalo.Context) error {
+	topic, err := loadTopic(c, c.Param("tid"))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	c.Set("topic", topic)
+	c.Set("category", &topic.Category)
+	c.Set("replies", &topic.Replies)
+	return c.Render(200, r.HTML("topics/detail"))
+}
+
+func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {
 	tx := c.Value("tx").(*pop.Connection)
 	topic := &models.Topic{}
 	if err := c.Bind(topic); err != nil {
-		return errors.WithStack(err)
+		return nil, errors.WithStack(err)
 	}
-	if err := tx.Find(topic, c.Param("tid")); err != nil {
-		return c.Error(404, err)
+	if err := tx.Find(topic, tid); err != nil {
+		return nil, c.Error(404, err)
 	}
-	c.Set("topic", topic)
-	cat := new(models.Category)
-	if err := tx.Find(cat, topic.CategoryID); err != nil {
-		return c.Error(404, err)
+	if err := tx.Find(&topic.Category, topic.CategoryID); err != nil {
+		return nil, c.Error(404, err)
 	}
-	c.Set("category", cat)
-	author := new(models.User)
-	if err := tx.Find(author, topic.AuthorID); err != nil {
-		return c.Error(404, err)
+	if err := tx.Find(&topic.Author, topic.AuthorID); err != nil {
+		return nil, c.Error(404, err)
 	}
-	topic.Author = author
-	q := tx.PaginateFromParams(c.Params())
-	replies := new(models.Replies)
-	if err := q.BelongsTo(topic).All(replies); err != nil {
-		return c.Error(404, err)
+	if err := tx.BelongsTo(topic).All(&topic.Replies); err != nil {
+		return nil, c.Error(404, err)
 	}
-	topic.Replies = *replies
-	c.Set("replies", replies)
-	c.Set("pagination", q.Paginator)
-	return c.Render(200, r.HTML("topics/detail"))
+	return topic, nil
 }
