@@ -18,8 +18,8 @@ import (
 
 type Forum struct {
 	ID          uuid.UUID `json:"id" db:"id"`
-	CreatedAt   time.Time `json:"created_at" db:"created_at,utc"`
-	UpdatedAt   time.Time `json:"updated_at" db:"updated_at,utc"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 	Title       string    `json:"title" db:"title"`
 	Description string    `json:"description" db:"description"`
 	BaseAddr    string    `json:"base_addr" db:"base_addr"`

@@ -15,8 +15,8 @@ import (
 
 type Topic struct {
 	ID         uuid.UUID `json:"id" db:"id"`
-	CreatedAt  time.Time `json:"created_at" db:"created_at,utc"`
-	UpdatedAt  time.Time `json:"updated_at" db:"updated_at,utc"`
+	CreatedAt  time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at" db:"updated_at"`
 	Title      string    `json:"title" db:"title"`
 	Content    string    `json:"content" db:"content"`
 	AuthorID   uuid.UUID `json:"author_id" db:"author_id"`
