@@ -44,6 +44,7 @@ var _ = grift.Namespace("db", func() {
 	grift.Add("seed:create-forum", func(c *grift.Context) error {
 		return models.DB.Transaction(func(tx *pop.Connection) error {
 			forum := &models.Forum{
+				BaseAddr:    "127.0.0.1:3000",
 				Title:       "Alternatiba-63",
 				Description: "a Forum for Alternatiba 63",
 			}
