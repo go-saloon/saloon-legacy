@@ -84,10 +84,10 @@ func (u *User) Create(tx *pop.Connection) (*validate.Errors, error) {
 
 // Authorize checks user's password for logging in
 func (u *User) Authorize(tx *pop.Connection) error {
-	err := tx.Where("email = ?", strings.ToLower(u.Email)).First(u)
+	err := tx.Where("username = ?", strings.ToLower(u.Username)).First(u)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
-			// couldn't find an user with that email address
+			// couldn't find a user with that username
 			return errors.New("User not found.")
 		}
 		return errors.WithStack(err)
@@ -110,6 +110,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		&validators.StringIsPresent{Field: u.Username, Name: "Username"},
 		&validators.StringIsPresent{Field: u.Password, Name: "Password"},
 		&validators.StringsMatch{Name: "Password", Field: u.Password, Field2: u.PasswordConfirm, Message: "Passwords do not match."},
+		&UsernameIsLowerCase{Name: "Username", Field: u.Username, tx: tx},
 		&UsernameNotTaken{Name: "Username", Field: u.Username, tx: tx},
 		&EmailNotTaken{Name: "Email", Field: u.Email, tx: tx},
 	), nil
@@ -127,6 +128,19 @@ func (u *User) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
 
+type UsernameIsLowerCase struct {
+	Name  string
+	Field string
+	tx    *pop.Connection
+}
+
+func (v *UsernameIsLowerCase) IsValid(errors *validate.Errors) {
+	if v.Field != strings.ToLower(v.Field) {
+		// found a user with same username
+		errors.Add(validators.GenerateKey(v.Name), fmt.Sprintf("The username %s is not lower case.", v.Field))
+	}
+}
+
 type UsernameNotTaken struct {
 	Name  string
 	Field string
@@ -134,7 +148,7 @@ type UsernameNotTaken struct {
 }
 
 func (v *UsernameNotTaken) IsValid(errors *validate.Errors) {
-	query := v.tx.Where("username = ?", v.Field)
+	query := v.tx.Where("username = ?", strings.ToLower(v.Field))
 	queryUser := User{}
 	err := query.First(&queryUser)
 	if err == nil {

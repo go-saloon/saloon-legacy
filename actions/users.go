@@ -79,7 +79,7 @@ func UsersLoginPost(c buffalo.Context) error {
 	if err != nil {
 		c.Set("user", user)
 		verrs := validate.NewErrors()
-		verrs.Add("Login", "Invalid email or password.")
+		verrs.Add("Login", "Invalid user or password.")
 		c.Set("errors", verrs.Errors)
 		return c.Render(422, r.HTML("users/login"))
 	}
