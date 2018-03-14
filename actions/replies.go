@@ -58,9 +58,23 @@ func RepliesEdit(c buffalo.Context) error {
 	return c.Render(200, r.HTML("replies/edit.html"))
 }
 
-// RepliesDelete default implementation.
 func RepliesDelete(c buffalo.Context) error {
-	return c.Render(200, r.HTML("replies/delete.html"))
+	reply, err := loadReply(c, c.Param("rid"))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	usr := c.Value("current_user").(*models.User)
+	if !usr.Admin && usr.ID != reply.AuthorID {
+		c.Flash().Add("danger", "You are not authorized to delete this reply")
+		return c.Redirect(302, "/topics/detail/%s", reply.TopicID)
+	}
+	tx := c.Value("tx").(*pop.Connection)
+	reply.Deleted = true
+	if err := tx.Update(reply); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Flash().Add("success", "Reply deleted successfuly.")
+	return c.Redirect(302, "/topics/detail/%s", reply.TopicID)
 }
 
 func RepliesDetail(c buffalo.Context) error {

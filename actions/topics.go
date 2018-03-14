@@ -65,13 +65,23 @@ func TopicsEditPost(c buffalo.Context) error {
 }
 
 // TopicsDelete default implementation.
-func TopicsDeleteGet(c buffalo.Context) error {
-	return c.Render(200, r.HTML("topics/delete.html"))
-}
-
-// TopicsDelete default implementation.
-func TopicsDeletePost(c buffalo.Context) error {
-	return c.Render(200, r.HTML("topics/delete.html"))
+func TopicsDelete(c buffalo.Context) error {
+	topic, err := loadTopic(c, c.Param("tid"))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	usr := c.Value("current_user").(*models.User)
+	if !usr.Admin && usr.ID != topic.AuthorID {
+		c.Flash().Add("danger", "You are not authorized to delete this topic")
+		return c.Redirect(302, "/topics/detail/%s", topic.ID)
+	}
+	tx := c.Value("tx").(*pop.Connection)
+	topic.Deleted = true
+	if err := tx.Update(topic); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Flash().Add("success", "Topic deleted successfuly.")
+	return c.Redirect(302, "/categories/detail/%s", topic.CategoryID)
 }
 
 // TopicsDetail default implementation.
@@ -108,12 +118,17 @@ func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {
 	}
 	topic.Category = cat
 	topic.Author = usr
+	replies := make(models.Replies, 0, len(topic.Replies))
 	for i := range topic.Replies {
 		reply, err := loadReply(c, topic.Replies[i].ID.String())
 		if err != nil {
 			return nil, c.Error(404, err)
 		}
-		topic.Replies[i] = *reply
+		if reply.Deleted {
+			continue
+		}
+		replies = append(replies, *reply)
 	}
+	topic.Replies = replies
 	return topic, nil
 }

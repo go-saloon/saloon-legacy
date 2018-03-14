@@ -13,9 +13,32 @@
 	</div>
 	<div class="col-md-2 mt-3 offset-md-8 text-right">
 		<%= if (current_user.IsAuthor(reply.AuthorID) || current_user.Admin){ %>
-		<a href="<%= repliesDeletePath({rid: reply.ID}) %>" class="btn btn-danger btn-sm m-0 fa fa-trash"></a>
+		<button type="button" class="btn btn-danger btn-sm m-0 fa fa-trash" data-toggle="modal" data-target="#reply-modal-<%= reply.ID %>"></button>
 		<a href="<%= editRepliesPath({rid: reply.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-edit"></a>
 		<% } %>
 		<a href="<%= repliesCreatePath({rid: reply.ID, tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-mail-reply"></a>
+	</div>
+</div>
+
+<div class="modal fade" id="reply-modal-<%= reply.ID %>">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Delete reply ?</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<!-- Modal  -->
+			<div class="modal-body">
+				<div class="row">
+					<div class="col text-left">
+						<a href="<%= repliesDeletePath({rid: reply.ID}) %>" class="btn btn-danger">Delete</a>
+					</div>
+					<div class="col text-right">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

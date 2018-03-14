@@ -89,8 +89,7 @@ func App() *buffalo.App {
 		topicGroup.GET("/detail/{tid}", TopicsDetail)
 		topicGroup.GET("/create", TopicsCreateGet)
 		topicGroup.POST("/create", TopicsCreatePost)
-		topicGroup.GET("/delete", TopicsDeleteGet)
-		topicGroup.POST("/delete", TopicsDeletePost)
+		topicGroup.GET("/delete", TopicsDelete)
 		topicGroup.GET("/edit", TopicsEditGet)
 		topicGroup.POST("/edit", TopicsEditPost)
 

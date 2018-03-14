@@ -28,6 +28,7 @@
 </div>
 <%= for (topic) in topics { %>
 <div class="row">
+	<%= if (!topic.Deleted) { %>
 	<hr class="col-md-12 col-sm-12">
 	<div class="col-md-8">
 		<a href="<%= topicsDetailPath({tid: topic.ID}) %>" class="text-secondary">
@@ -43,6 +44,7 @@
 	</div>
 	<div class="col-md-1 text-center"><%= len(topic.Replies) %></div>
 	<div class="col-md-1 text-center"><%= timeSince(topic.LastUpdate())  %></div>
+	<% } %>
 </div>
 <% } %>
 <hr class="col-md-12 col-sm-12">

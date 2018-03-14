@@ -46,7 +46,7 @@
 		<tbody>
 			<%= for (cat) in categories { %>
 			<tr>
-				<td><%= cat.Title %></td>
+				<td><a href="<%= categoriesDetailPath({cid: cat.ID}) %>" class="text-secondary"><%= cat.Title %></a></td>
 				<%= if (current_user.Subscribed(cat.ID)) { %>
 				<td><button type="submit" class="btn btn-success">Yes</button></td>
 				<% } else { %>
