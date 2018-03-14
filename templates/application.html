@@ -31,8 +31,9 @@
 						<%= if (current_user) { %>
 						<li class="nav-item">
 							<div class="dropdown">
-								<button type="button" class="btn btn-secondary" data-toggle="dropdown">
-									<%= current_user.Username %>
+								<button type="button" class="btn btn-light" data-toggle="dropdown">
+									<img src="data:image/png;base64,<%= current_user.Image() %>" alt="<%= current_user.Username %>" style="width:50px;" class="img-circle">
+									<span class="fa fa-caret-down"></span>
 								</button>
 								<div class="dropdown-menu">
 									<a class="dropdown-item nav-link fa fa-gear" href="<%= usersSettingsPath() %>"> Settings</a>

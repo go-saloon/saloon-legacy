@@ -5,10 +5,16 @@
 package grifts
 
 import (
+	"bytes"
 	"fmt"
+	"image/png"
+	"unicode"
+	"unicode/utf8"
 
+	"github.com/disintegration/letteravatar"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/pop/nulls"
 	"github.com/markbates/grift/grift"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -46,6 +52,10 @@ var _ = grift.Namespace("db", func() {
 					return fmt.Errorf("could not generate password hash: %v", err)
 				}
 				usr.PasswordHash = string(pwd)
+				usr.Avatar, err = genAvatar(usr.Username)
+				if err != nil {
+					return errors.WithStack(err)
+				}
 				return tx.Create(usr)
 			})
 		})
@@ -55,12 +65,16 @@ var _ = grift.Namespace("db", func() {
 			return models.DB.Transaction(func(tx *pop.Connection) error {
 				for _, usr := range []*models.User{
 					{
-						Username: "toto",
-						Email:    "toto@example.com",
+						Username:  "toto",
+						Email:     "toto@example.com",
+						FirstName: nulls.String{String: "Mr", Valid: true},
+						LastName:  nulls.String{String: "Toto", Valid: true},
 					},
 					{
-						Username: "tata",
-						Email:    "tata@example.com",
+						Username:  "tata",
+						Email:     "tata@example.com",
+						FirstName: nulls.String{String: "Mme", Valid: true},
+						LastName:  nulls.String{String: "Tata", Valid: true},
 					},
 				} {
 					usr.Password = usr.Username
@@ -70,6 +84,10 @@ var _ = grift.Namespace("db", func() {
 						return fmt.Errorf("could not generate password hash: %v", err)
 					}
 					usr.PasswordHash = string(pwd)
+					usr.Avatar, err = genAvatar(usr.Username)
+					if err != nil {
+						return errors.WithStack(err)
+					}
 					err = tx.Create(usr)
 					if err != nil {
 						return errors.WithStack(err)
@@ -81,3 +99,18 @@ var _ = grift.Namespace("db", func() {
 	})
 
 })
+
+func genAvatar(name string) ([]byte, error) {
+	const avatarSize = 100
+	letter, _ := utf8.DecodeRuneInString(name)
+	img, err := letteravatar.Draw(avatarSize, unicode.ToUpper(letter), nil)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate letteravatar: %v", err)
+	}
+	buf := new(bytes.Buffer)
+	err = png.Encode(buf, img)
+	if err != nil {
+		return nil, fmt.Errorf("could not encode letteravatar to PNG: %v", err)
+	}
+	return buf.Bytes(), nil
+}

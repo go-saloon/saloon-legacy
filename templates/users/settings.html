@@ -1,35 +1,38 @@
 <div class="row">
-	<h1 class="col-md-12"><%= current_user.Username %> </h1>
-</div>
-<div class="row">
-	<h2 class="col-md-12"><%= current_user.FirstName %><%= current_user.LastName %></h2>
+	<div class="col-md-1">
+		<img class="img-circle" src="data:image/png;base64,<%= current_user.Image() %>" alt="<%= current_user.Username %>" style="width:50px;">
+	</div>
+	<div class="col-md-10">
+		<h4><%= current_user.Username %> </h4>
+		<div><%= current_user.FirstName %> <%= current_user.LastName %></div>
+	</div>
 </div>
 
 <hr class="col-md-12">
 
 <div class="row">
-	<h4 class="col-md-3">Username</h4>
+	<h5 class="col-md-3">Username</h5>
 </div>
 <div class="row"/>
 	<div class="col-md-2 "><%= current_user.Username %></div>
 </div>
 
 <div class="row mt-3">
-	<h4 class="col-md-2">Name</h4>
+	<h5 class="col-md-2">Name</h5>
 </div>
 <div class="row"/>
 	<div class="col-md-2"><%= current_user.FirstName %><%= current_user.LastName %></div>
 </div>
 
 <div class="row mt-3">
-	<h4 class="col-md-2">Email</h4>
+	<h5 class="col-md-2">Email</h5>
 </div>
 <div class="row"/>
 	<div class="col-md-2"><%= current_user.Email %></div>
 </div>
 
-<div class="row mt-3">
-	<h2>Subscriptions</h2>
+<div class="row mt-5 mb-2">
+	<h5>Subscriptions</h5>
 </div>
 
 <div class="row">
@@ -45,7 +48,7 @@
 			<tr>
 				<td><%= cat.Title %></td>
 				<%= if (current_user.Subscribed(cat.ID)) { %>
-				<td><button type="submit" class="btn btn-primary">Yes</button></td>
+				<td><button type="submit" class="btn btn-success">Yes</button></td>
 				<% } else { %>
 				<td><button type="submit" class="btn btn-alert">No</button></td>
 				<% } %>
@@ -54,3 +57,15 @@
 		</tbody>
 	</table>
 </div>
+
+<div class="row mt-5 mb-2">
+	<h5>Profile Picture</h5>
+</div>
+<div class="row">
+	<div class="col-md-1">
+		<img class="img-circle" src="data:image/png;base64,<%= current_user.Image() %>" alt="<%= current_user.Username %>">
+	</div>
+	<button type="submit" class="fa fa-pencil btn btn-alert" style="height:50%"></button>
+</div>
+
+<button type="submit" class="btn btn-primary mt-5 offset-md-10">Save Changes</button>

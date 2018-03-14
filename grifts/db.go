@@ -1,6 +1,8 @@
 package grifts
 
 import (
+	"math/rand"
+
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/pop"
 	"github.com/markbates/grift/grift"
@@ -33,6 +35,30 @@ var _ = grift.Namespace("db", func() {
 			} {
 				err := tx.Create(cat)
 				if err != nil {
+					return errors.WithStack(err)
+				}
+			}
+			users := new(models.Users)
+			if err := tx.All(users); err != nil {
+				return errors.WithStack(err)
+			}
+			cats := new(models.Categories)
+			if err := tx.All(cats); err != nil {
+				return errors.WithStack(err)
+			}
+
+			for _, usr := range *users {
+				if usr.Admin {
+					continue
+				}
+				i := rand.Intn(len(*cats))
+				cat := (*cats)[i]
+				usr.Subscriptions = append(usr.Subscriptions, cat.ID)
+				if err := tx.Update(&usr); err != nil {
+					return errors.WithStack(err)
+				}
+				cat.Subscribers = append(cat.Subscribers, usr.ID)
+				if err := tx.Update(&cat); err != nil {
 					return errors.WithStack(err)
 				}
 			}

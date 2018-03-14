@@ -9,7 +9,9 @@
 </div>
 <hr class="col-md-10 ml-2">
 <div class="row">
-	<a class="col-md-1" href="<%= usersShowPath({uid: topic.AuthorID}) %>"> A </a>
+	<a class="col-md-1" href="<%= usersShowPath({uid: topic.AuthorID}) %>">
+		<img src="data:image/png;base64,<%= topic.Author.Image() %>" alt="<%= topic.Author.Username %>" style="width:50px;border-radius:50%;">
+	</a>
 	<a class="col-md-2" href="<%= usersShowPath({uid: topic.AuthorID}) %>"> <%= topic.Author.Username %></a>
 	<div class="col-md-5"></div>
 	<div class="col-md-2 text-right"><%= timeSince(topic.CreatedAt) %> </div>

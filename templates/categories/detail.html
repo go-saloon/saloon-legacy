@@ -36,7 +36,9 @@
 	</div>
 	<div class="col-md-2 text-center">
 		<%= for (author) in topic.Authors() { %>
-		<span class="text-secondary"><%= author.Username %></span>
+		<span class="text-secondary">
+			<img src="data:image/png;base64,<%= author.Image() %>" alt="<%= author.Username %>" style="width:50px;border-radius:50%;">
+		</span>
 		<% } %>
 	</div>
 	<div class="col-md-1 text-center"><%= len(topic.Replies) %></div>
