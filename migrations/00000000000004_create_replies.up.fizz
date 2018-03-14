@@ -3,4 +3,5 @@ create_table("replies", func(t) {
 	t.Column("author_id", "uuid", {})
 	t.Column("topic_id", "uuid", {})
 	t.Column("content", "text", {})
+	t.Column("deleted", "bool", {})
 })
