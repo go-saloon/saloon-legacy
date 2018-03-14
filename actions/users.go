@@ -5,6 +5,13 @@
 package actions
 
 import (
+	"bytes"
+	"fmt"
+	"image/png"
+	"unicode"
+	"unicode/utf8"
+
+	"github.com/disintegration/letteravatar"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
@@ -28,6 +35,11 @@ func UsersRegisterPost(c buffalo.Context) error {
 	if err := c.Bind(user); err != nil {
 		return errors.WithStack(err)
 	}
+	avatar, err := GenAvatar(user.Username)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	user.Avatar = avatar
 	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
 	// Validate the data from the html form
@@ -160,4 +172,19 @@ func UserRequired(next buffalo.Handler) buffalo.Handler {
 		c.Flash().Add("danger", "You are not authorized to view that page.")
 		return c.Redirect(302, "/")
 	}
+}
+
+func GenAvatar(name string) ([]byte, error) {
+	const avatarSize = 100
+	letter, _ := utf8.DecodeRuneInString(name)
+	img, err := letteravatar.Draw(avatarSize, unicode.ToUpper(letter), nil)
+	if err != nil {
+		return nil, fmt.Errorf("could not generate letteravatar: %v", err)
+	}
+	buf := new(bytes.Buffer)
+	err = png.Encode(buf, img)
+	if err != nil {
+		return nil, fmt.Errorf("could not encode letteravatar to PNG: %v", err)
+	}
+	return buf.Bytes(), nil
 }
