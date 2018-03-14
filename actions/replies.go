@@ -25,12 +25,12 @@ func RepliesCreateGet(c buffalo.Context) error {
 func RepliesCreatePost(c buffalo.Context) error {
 	tx := c.Value("tx").(*pop.Connection)
 	reply := new(models.Reply)
-	topic := new(models.Topic)
 	user := c.Value("current_user").(*models.User)
 	if err := c.Bind(reply); err != nil {
 		return errors.WithStack(err)
 	}
-	if err := tx.Find(topic, c.Param("tid")); err != nil {
+	topic, err := loadTopic(c, c.Param("tid"))
+	if err != nil {
 		return c.Error(404, err)
 	}
 	c.Set("topic", topic)
@@ -50,6 +50,12 @@ func RepliesCreatePost(c buffalo.Context) error {
 		return c.Render(422, r.HTML("replies/create"))
 	}
 	c.Flash().Add("success", "New reply added successfully.")
+
+	err = notifyTopic(c, topic, reply)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	return c.Redirect(302, "/topics/detail/%s", topic.ID)
 }
 
