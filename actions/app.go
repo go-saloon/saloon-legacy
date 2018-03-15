@@ -96,6 +96,8 @@ func App() *buffalo.App {
 		topicGroup.GET("/delete", TopicsDelete)
 		topicGroup.GET("/edit", TopicsEditGet)
 		topicGroup.POST("/edit", TopicsEditPost)
+		topicGroup.GET("/add-subscriber/{tid}", UserRequired(TopicsAddSubscriber))
+		topicGroup.GET("/rm-subscriber/{tid}", UserRequired(TopicsRemoveSubscriber))
 
 		replyGroup := app.Group("/replies")
 		replyGroup.Use(UserRequired)

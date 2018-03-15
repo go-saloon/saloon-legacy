@@ -47,6 +47,7 @@ func TopicsCreatePost(c buffalo.Context) error {
 	topic.Category = cat
 	topic.AuthorID = topic.Author.ID
 	topic.CategoryID = topic.Category.ID
+	topic.AddSubscriber(topic.AuthorID)
 	// Validate the data from the html form
 	verrs, err := tx.ValidateAndCreate(topic)
 	if err != nil {
@@ -101,6 +102,52 @@ func TopicsDetail(c buffalo.Context) error {
 	c.Set("category", topic.Category)
 	c.Set("replies", &topic.Replies)
 	return c.Render(200, r.HTML("topics/detail"))
+}
+
+func TopicsAddSubscriber(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	topic, err := loadTopic(c, c.Param("tid"))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	usr := c.Value("current_user").(*models.User)
+	topic.AddSubscriber(usr.ID)
+
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(topic); err != nil {
+		return errors.WithStack(err)
+	}
+
+	c.Set("topic", topic)
+	c.Set("category", topic.Category)
+	c.Set("replies", &topic.Replies)
+	return c.Redirect(302, "/topics/detail/%s", topic.ID)
+}
+
+func TopicsRemoveSubscriber(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	topic, err := loadTopic(c, c.Param("tid"))
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	usr := c.Value("current_user").(*models.User)
+	topic.RemoveSubscriber(usr.ID)
+
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(topic); err != nil {
+		return errors.WithStack(err)
+	}
+
+	c.Set("topic", topic)
+	c.Set("category", topic.Category)
+	c.Set("replies", &topic.Replies)
+	return c.Redirect(302, "/topics/detail/%s", topic.ID)
 }
 
 func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {

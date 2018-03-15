@@ -5,4 +5,5 @@ create_table("topics", func(t) {
 	t.Column("author_id", "uuid", {})
 	t.Column("category_id", "uuid", {})
 	t.Column("deleted", "bool", {})
+	t.Column("subscribers", "varchar[]", {"null": true})
 })

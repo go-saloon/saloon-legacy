@@ -6,6 +6,13 @@
 		<a href="<%= categoriesDetailPath({cid: topic.CategoryID}) %>" class="text-secondary"> <%= topic.Category.Title %>
 		</a>
 	</h4>
+	<div class="col-md-1 offset-md-7">
+		<%= if (topic.Subscribed(current_user.ID)) { %>
+		<a href="<%= topicsRmSubscriberPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-volume-off"> Unsubscribe</a>
+		<% } else { %>
+		<a href="<%= topicsAddSubscriberPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-volume-up"> Subscribe</a>
+		<% } %>
+	</div>
 </div>
 <hr class="col-md-10 ml-2">
 <div class="row">

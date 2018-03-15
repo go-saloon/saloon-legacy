@@ -8,20 +8,22 @@ import (
 	"time"
 
 	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/pop/slices"
 	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
 	"github.com/gobuffalo/validate/validators"
 )
 
 type Topic struct {
-	ID         uuid.UUID `json:"id" db:"id"`
-	CreatedAt  time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at" db:"updated_at"`
-	Title      string    `json:"title" db:"title"`
-	Content    string    `json:"content" db:"content"`
-	AuthorID   uuid.UUID `json:"author_id" db:"author_id"`
-	CategoryID uuid.UUID `json:"category_id" db:"category_id"`
-	Deleted    bool      `json:"deleted" db:"deleted"`
+	ID          uuid.UUID   `json:"id" db:"id"`
+	CreatedAt   time.Time   `json:"created_at" db:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at" db:"updated_at"`
+	Title       string      `json:"title" db:"title"`
+	Content     string      `json:"content" db:"content"`
+	AuthorID    uuid.UUID   `json:"author_id" db:"author_id"`
+	CategoryID  uuid.UUID   `json:"category_id" db:"category_id"`
+	Deleted     bool        `json:"deleted" db:"deleted"`
+	Subscribers slices.UUID `json:"subscribers" db:"subscribers"`
 
 	Author   *User     `json:"-" db:"-"`
 	Category *Category `json:"-" db:"-"`
@@ -72,4 +74,40 @@ func (t Topic) LastUpdate() time.Time {
 		v = last(v, reply.UpdatedAt)
 	}
 	return v
+}
+
+func (t Topic) Subscribed(id uuid.UUID) bool {
+	for _, usr := range t.Subscribers {
+		if usr == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (t *Topic) AddSubscriber(id uuid.UUID) {
+	set := make(map[uuid.UUID]struct{})
+	set[id] = struct{}{}
+	for _, sub := range t.Subscribers {
+		set[sub] = struct{}{}
+	}
+	subs := make(slices.UUID, 0, len(set))
+	for sub := range set {
+		subs = append(subs, sub)
+	}
+	t.Subscribers = subs
+}
+
+func (t *Topic) RemoveSubscriber(id uuid.UUID) {
+	set := make(map[uuid.UUID]struct{})
+	for _, sub := range t.Subscribers {
+		if sub != id {
+			set[sub] = struct{}{}
+		}
+	}
+	subs := make(slices.UUID, 0, len(set))
+	for sub := range set {
+		subs = append(subs, sub)
+	}
+	t.Subscribers = subs
 }
