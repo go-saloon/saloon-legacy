@@ -57,6 +57,33 @@ func (u User) Subscribed(id uuid.UUID) bool {
 	return false
 }
 
+func (u *User) AddSubscription(id uuid.UUID) {
+	set := make(map[uuid.UUID]struct{})
+	set[id] = struct{}{}
+	for _, sub := range u.Subscriptions {
+		set[sub] = struct{}{}
+	}
+	subs := make(slices.UUID, 0, len(set))
+	for sub := range set {
+		subs = append(subs, sub)
+	}
+	u.Subscriptions = subs
+}
+
+func (u *User) RemoveSubscription(id uuid.UUID) {
+	set := make(map[uuid.UUID]struct{})
+	for _, sub := range u.Subscriptions {
+		if sub != id {
+			set[sub] = struct{}{}
+		}
+	}
+	subs := make(slices.UUID, 0, len(set))
+	for sub := range set {
+		subs = append(subs, sub)
+	}
+	u.Subscriptions = subs
+}
+
 func (u User) Image() string {
 	return base64.StdEncoding.EncodeToString(u.Avatar)
 }

@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"image/png"
+	"sort"
 	"unicode"
 	"unicode/utf8"
 
@@ -119,6 +120,7 @@ func UsersSettingsGet(c buffalo.Context) error {
 	if err := tx.All(cats); err != nil {
 		return errors.WithStack(err)
 	}
+	sort.Sort(cats)
 	c.Set("categories", cats)
 	return c.Render(200, r.HTML("users/settings"))
 }
@@ -133,6 +135,56 @@ func UsersSettingsPost(c buffalo.Context) error {
 		tx := c.Value("tx").(*pop.Connection)
 	*/
 	return c.Render(200, r.HTML("users/settings"))
+}
+
+func UsersSettingsAddSubscription(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	cat := new(models.Category)
+	if err := tx.Find(cat, c.Param("cid")); err != nil {
+		return errors.WithStack(err)
+	}
+	usr := c.Value("current_user").(*models.User)
+	usr.AddSubscription(cat.ID)
+	cat.AddSubscriber(usr.ID)
+
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+	if err := tx.Update(cat); err != nil {
+		return errors.WithStack(err)
+	}
+
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Set("categories", cats)
+	c.Set("current_user", usr)
+	return c.Redirect(302, "/users/settings")
+}
+
+func UsersSettingsRemoveSubscription(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	cat := new(models.Category)
+	if err := tx.Find(cat, c.Param("cid")); err != nil {
+		return errors.WithStack(err)
+	}
+	usr := c.Value("current_user").(*models.User)
+	usr.RemoveSubscription(cat.ID)
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+	cat.RemoveSubscriber(usr.ID)
+	if err := tx.Update(cat); err != nil {
+		return errors.WithStack(err)
+	}
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Set("categories", cats)
+	c.Set("current_user", usr)
+	return c.Redirect(302, "/users/settings")
 }
 
 func UsersShow(c buffalo.Context) error {

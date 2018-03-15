@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"sort"
+
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
@@ -34,6 +36,7 @@ func CategoriesIndex(c buffalo.Context) error {
 	if err := q.All(cats); err != nil {
 		return errors.WithStack(err)
 	}
+	sort.Sort(cats)
 	// Make categories available inside the html template
 	c.Set("categories", cats)
 	// Add the paginator to the context so it can be used in the template.

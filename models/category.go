@@ -32,6 +32,33 @@ func (c Category) String() string {
 	return string(jc)
 }
 
+func (c *Category) AddSubscriber(id uuid.UUID) {
+	set := make(map[uuid.UUID]struct{})
+	set[id] = struct{}{}
+	for _, sub := range c.Subscribers {
+		set[sub] = struct{}{}
+	}
+	subs := make(slices.UUID, 0, len(set))
+	for sub := range set {
+		subs = append(subs, sub)
+	}
+	c.Subscribers = subs
+}
+
+func (c *Category) RemoveSubscriber(id uuid.UUID) {
+	set := make(map[uuid.UUID]struct{})
+	for _, sub := range c.Subscribers {
+		if sub != id {
+			set[sub] = struct{}{}
+		}
+	}
+	subs := make(slices.UUID, 0, len(set))
+	for sub := range set {
+		subs = append(subs, sub)
+	}
+	c.Subscribers = subs
+}
+
 // Categories is not required by pop and may be deleted
 type Categories []Category
 
@@ -39,6 +66,15 @@ type Categories []Category
 func (c Categories) String() string {
 	jc, _ := json.Marshal(c)
 	return string(jc)
+}
+
+func (p Categories) Len() int      { return len(p) }
+func (p Categories) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
+func (p Categories) Less(i, j int) bool {
+	if p[i].Title == p[j].Title {
+		return p[i].ID.String() < p[j].ID.String()
+	}
+	return p[i].Title < p[j].Title
 }
 
 // Validate gets run every time you call a "pop.Validate*" (pop.ValidateAndSave, pop.ValidateAndCreate, pop.ValidateAndUpdate) method.

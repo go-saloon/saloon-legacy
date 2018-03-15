@@ -47,11 +47,15 @@
 			<%= for (cat) in categories { %>
 			<tr>
 				<td><a href="<%= categoriesDetailPath({cid: cat.ID}) %>" class="text-secondary"><%= cat.Title %></a></td>
-				<%= if (current_user.Subscribed(cat.ID)) { %>
-				<td><button type="submit" class="btn btn-success">Yes</button></td>
-				<% } else { %>
-				<td><button type="submit" class="btn btn-alert">No</button></td>
-				<% } %>
+				<td>
+					<div class="text-justified">
+						<%= if (current_user.Subscribed(cat.ID)) { %>
+						<a href="<%= usersSettingsRmSubscriptionPath({cid: cat.ID}) %>" class="fa fa-check-square-o text-justified text-secondary"></a>
+						<% } else { %>
+						<a href="<%= usersSettingsAddSubscriptionPath({cid: cat.ID}) %>" class="fa fa-square-o text-justified text-secondary"></a>
+						<% } %>
+					</div>
+				</td>
 			</tr>
 			<% } %>
 		</tbody>

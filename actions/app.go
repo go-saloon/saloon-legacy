@@ -75,6 +75,8 @@ func App() *buffalo.App {
 		auth.GET("/logout", UsersLogout)
 		auth.GET("/settings", UserRequired(UsersSettingsGet))
 		auth.GET("/show", UserRequired(UsersShow))
+		auth.GET("/settings/add-subscription/{cid}", UserRequired(UsersSettingsAddSubscription))
+		auth.GET("/settings/rm-subscription/{cid}", UserRequired(UsersSettingsRemoveSubscription))
 
 		catGroup := app.Group("/categories")
 		catGroup.Use(UserRequired)
