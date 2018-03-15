@@ -77,6 +77,7 @@ func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply,
 	// Creates a new message
 	m := mail.NewMessage()
 	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s/%s@saloon.com>", topic.ID, reply.ID))
+	m.SetHeader("In-Reply-To", fmt.Sprintf("<topic/%s@saloon.com>", topic.ID))
 	m.SetHeader("List-ID", "forum.saloon.com")
 
 	m.From = fmt.Sprintf("%s <alternatiba63.forum@gmail.com>", reply.Author.Username)
