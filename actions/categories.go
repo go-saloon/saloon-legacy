@@ -3,9 +3,11 @@ package actions
 import (
 	"sort"
 
+	"github.com/go-saloon/saloon/mailers"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/uuid"
 	"github.com/pkg/errors"
 )
 
@@ -95,6 +97,42 @@ func CategoriesDetail(c buffalo.Context) error {
 		(*topics)[i] = *topic
 	}
 	return c.Render(200, r.HTML("categories/detail"))
+}
+
+func notifyCategory(c buffalo.Context, topic *models.Topic) error {
+	set := make(map[uuid.UUID]struct{})
+	for _, usr := range topic.Subscribers {
+		set[usr] = struct{}{}
+	}
+	set[topic.AuthorID] = struct{}{}
+
+	cat := new(models.Category)
+	tx := c.Value("tx").(*pop.Connection)
+	if err := tx.Find(cat, topic.CategoryID); err != nil {
+		return errors.WithStack(err)
+	}
+	for _, usr := range cat.Subscribers {
+		set[usr] = struct{}{}
+	}
+
+	users := new(models.Users)
+	if err := tx.All(users); err != nil {
+		return errors.WithStack(err)
+	}
+
+	var recpts []models.User
+	for _, usr := range *users {
+		if _, ok := set[usr.ID]; !ok {
+			continue
+		}
+		recpts = append(recpts, usr)
+	}
+
+	err := mailers.NotifyCategory(c, topic, recpts)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
 }
 
 /*

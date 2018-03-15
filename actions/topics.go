@@ -5,8 +5,6 @@
 package actions
 
 import (
-	"log"
-
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
@@ -58,6 +56,12 @@ func TopicsCreatePost(c buffalo.Context) error {
 		c.Set("errors", verrs.Errors)
 		return c.Render(422, r.HTML("topics/create"))
 	}
+
+	err = notifyCategory(c, topic)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	c.Flash().Add("success", "New topic added successfully.")
 	return c.Redirect(302, "/topics/detail/%s", topic.ID)
 }
@@ -189,8 +193,8 @@ func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {
 
 func notifyTopic(c buffalo.Context, topic *models.Topic, reply *models.Reply) error {
 	set := make(map[uuid.UUID]struct{})
-	for _, usr := range topic.Authors() {
-		set[usr.ID] = struct{}{}
+	for _, usr := range topic.Subscribers {
+		set[usr] = struct{}{}
 	}
 	set[reply.AuthorID] = struct{}{}
 
@@ -214,9 +218,7 @@ func notifyTopic(c buffalo.Context, topic *models.Topic, reply *models.Reply) er
 			continue
 		}
 		recpts = append(recpts, usr)
-		log.Printf(">>> notify %q (%v)", usr.Username, usr.Email)
 	}
-	log.Printf("--- notify with ---\n%q", reply.Content)
 
 	return nil
 }

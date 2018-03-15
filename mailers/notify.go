@@ -4,6 +4,15 @@
 
 package mailers
 
+import (
+	"fmt"
+
+	"github.com/go-saloon/saloon/models"
+	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/buffalo/mail"
+	"github.com/pkg/errors"
+)
+
 /*
 Transport; Wed, 14 Mar 2018 17:30:38 +0000
 Received: from localhost.localdomain (188.184.69.125) by cernmx.cern.ch (188.184.36.24) with Microsoft SMTP Server id 14.3.319.2; Wed, 14 Mar 2018 18:30:21 +0100
@@ -26,3 +35,40 @@ Precedence: list
 List-ID: <root.root-forum.cern.ch>
 List-Archive: http://root-forum.cern.ch/t/load-a-standalone-sharedlibrary/28306
 */
+
+func NotifyCategory(c buffalo.Context, topic *models.Topic, recpts []models.User) error {
+	// Creates a new message
+	m := mail.NewMessage()
+	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s@saloon.com>", topic.ID))
+	m.SetHeader("List-ID", "forum.saloon.com")
+
+	m.From = fmt.Sprintf("%s <alternatiba63.forum@gmail.com>", topic.Author.Username)
+	m.Subject = topic.Title
+	m.To = nil
+	m.Bcc = nil
+	for _, usr := range recpts {
+		m.Bcc = append(m.Bcc, usr.Email)
+	}
+
+	// Data that will be used inside the templates when rendering.
+	data := map[string]interface{}{
+		"content": topic.Content,
+	}
+
+	// You can add multiple bodies to the message you're creating to have content-types alternatives.
+	err := m.AddBodies(
+		data,
+		r.HTML("mail/notify-category.html"),
+		r.Plain("mail/notify-category.txt"),
+	)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	err = smtp.Send(m)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
