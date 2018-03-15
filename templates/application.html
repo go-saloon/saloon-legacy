@@ -13,7 +13,11 @@
 			<!-- NavBar -->
 			<nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
 				<a class="navbar-brand" href="<%= rootPath() %>">
-					<img src="<%= assetPath("images/logo.png") %>" alt="<%= forum.Title %>" style="width:50px;">
+					<%= if (len(forum.Logo)==0) { %>
+					<img src="<%= assetPath("images/logo-buffalo.png") %>" style="width:50px;">
+					<% } else { %>
+					<img src="data:image/png;base64,<%= forum.LogoImage() %>" style="width:50px;">
+					<% } %>
 				</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>

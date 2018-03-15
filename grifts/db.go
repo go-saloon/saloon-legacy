@@ -1,7 +1,17 @@
 package grifts
 
 import (
-	"math/rand"
+	"bytes"
+	"flag"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	"image/png"
+	"os"
+
+	_ "golang.org/x/image/bmp"
+	_ "golang.org/x/image/tiff"
+	_ "golang.org/x/image/webp"
 
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/pop"
@@ -38,43 +48,51 @@ var _ = grift.Namespace("db", func() {
 					return errors.WithStack(err)
 				}
 			}
-			users := new(models.Users)
-			if err := tx.All(users); err != nil {
-				return errors.WithStack(err)
-			}
-			cats := new(models.Categories)
-			if err := tx.All(cats); err != nil {
-				return errors.WithStack(err)
-			}
-
-			for _, usr := range *users {
-				if usr.Admin {
-					continue
-				}
-				i := rand.Intn(len(*cats))
-				cat := (*cats)[i]
-				usr.Subscriptions = append(usr.Subscriptions, cat.ID)
-				if err := tx.Update(&usr); err != nil {
-					return errors.WithStack(err)
-				}
-				cat.Subscribers = append(cat.Subscribers, usr.ID)
-				if err := tx.Update(&cat); err != nil {
-					return errors.WithStack(err)
-				}
-			}
 			return nil
 		})
 	})
 
 	grift.Desc("seed:create-forum", "Create forum welcome message")
 	grift.Add("seed:create-forum", func(c *grift.Context) error {
+		fset := flag.NewFlagSet("create-forum", flag.ExitOnError)
+		fname := fset.String("logo", "", "path to a logo image")
+		title := fset.String("title", "Saloon", "title of the forum")
+		descr := fset.String("descr", "A nice forum", "description of the forum")
+
+		err := fset.Parse(c.Args)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
 		return models.DB.Transaction(func(tx *pop.Connection) error {
-			forum := &models.Forum{
-				BaseAddr:    "127.0.0.1:3000",
-				Title:       "Alternatiba-63",
-				Description: "a Forum for Alternatiba 63",
+			var (
+				err  error
+				logo []byte
+			)
+
+			if *fname != "" {
+				f, err := os.Open(*fname)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				defer f.Close()
+				img, _, err := image.Decode(f)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				buf := new(bytes.Buffer)
+				err = png.Encode(buf, img)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				logo = buf.Bytes()
 			}
-			err := tx.Create(forum)
+			forum := &models.Forum{
+				Title:       *title,
+				Description: *descr,
+				Logo:        logo,
+			}
+			err = tx.Create(forum)
 			if err != nil {
 				return errors.WithStack(err)
 			}

@@ -5,9 +5,8 @@
 package models
 
 import (
+	"encoding/base64"
 	"encoding/json"
-	"fmt"
-	"net/url"
 	"time"
 
 	"github.com/gobuffalo/pop"
@@ -22,13 +21,17 @@ type Forum struct {
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 	Title       string    `json:"title" db:"title"`
 	Description string    `json:"description" db:"description"`
-	BaseAddr    string    `json:"base_addr" db:"base_addr"`
+	Logo        []byte    `json:"logo" db:"logo"`
 }
 
 // String is not required by pop and may be deleted
 func (f Forum) String() string {
 	jf, _ := json.Marshal(f)
 	return string(jf)
+}
+
+func (f Forum) LogoImage() string {
+	return base64.StdEncoding.EncodeToString(f.Logo)
 }
 
 // Forums is not required by pop and may be deleted
@@ -44,7 +47,6 @@ func (f Forums) String() string {
 // This method is not required and may be deleted.
 func (f *Forum) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.Validate(
-		&validators.StringIsPresent{Field: f.BaseAddr, Name: "BaseAddr"},
 		&validators.StringIsPresent{Field: f.Title, Name: "Title"},
 		&validators.StringIsPresent{Field: f.Description, Name: "Description"},
 	), nil
@@ -60,16 +62,4 @@ func (f *Forum) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 // This method is not required and may be deleted.
 func (f *Forum) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
-}
-
-type validURL struct {
-	Name  string
-	Field string
-}
-
-func (v *validURL) IsValid(errors *validate.Errors) {
-	_, err := url.Parse(v.Field)
-	if err != nil {
-		errors.Add(validators.GenerateKey(v.Name), fmt.Sprintf("The address %q is not a valid URL", v.Field))
-	}
 }
