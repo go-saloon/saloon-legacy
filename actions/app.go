@@ -73,7 +73,7 @@ func App() *buffalo.App {
 		auth.GET("/login", UsersLoginGet)
 		auth.POST("/login", UsersLoginPost)
 		auth.GET("/logout", UsersLogout)
-		auth.GET("/settings", UserRequired(UsersSettingsGet))
+		auth.GET("/settings", UserRequired(UsersSettings))
 		auth.GET("/show", UserRequired(UsersShow))
 		auth.GET("/settings/add-subscription/{cid}", UserRequired(UsersSettingsAddSubscription))
 		auth.GET("/settings/rm-subscription/{cid}", UserRequired(UsersSettingsRemoveSubscription))

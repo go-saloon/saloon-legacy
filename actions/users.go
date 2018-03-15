@@ -120,8 +120,8 @@ func SetCurrentUser(next buffalo.Handler) buffalo.Handler {
 	}
 }
 
-// USerSettingsGet displays the user's informations
-func UsersSettingsGet(c buffalo.Context) error {
+// UserSettings displays the user's informations
+func UsersSettings(c buffalo.Context) error {
 	tx := c.Value("tx").(*pop.Connection)
 	cats := new(models.Categories)
 	if err := tx.All(cats); err != nil {
@@ -130,18 +130,6 @@ func UsersSettingsGet(c buffalo.Context) error {
 	sort.Sort(cats)
 	c.Set("categories", cats)
 	c.Set("avatar", new(models.Avatar))
-	return c.Render(200, r.HTML("users/settings"))
-}
-
-func UsersSettingsPost(c buffalo.Context) error {
-	/*
-		user := &models.User{}
-		// Bind the user to the html form elements
-		if err := c.Bind(user); err != nil {
-			return errors.WithStack(err)
-		}
-		tx := c.Value("tx").(*pop.Connection)
-	*/
 	return c.Render(200, r.HTML("users/settings"))
 }
 
@@ -169,7 +157,7 @@ func UsersSettingsAddSubscription(c buffalo.Context) error {
 	sort.Sort(cats)
 	c.Set("categories", cats)
 	c.Set("avatar", new(models.Avatar))
-	return c.Render(200, r.HTML("users/settings"))
+	return c.Redirect(302, "/users/settings")
 }
 
 func UsersSettingsRemoveSubscription(c buffalo.Context) error {
@@ -194,7 +182,7 @@ func UsersSettingsRemoveSubscription(c buffalo.Context) error {
 	sort.Sort(cats)
 	c.Set("categories", cats)
 	c.Set("avatar", new(models.Avatar))
-	return c.Render(200, r.HTML("users/settings"))
+	return c.Redirect(302, "/users/settings")
 }
 
 func UsersSettingsUpdateAvatar(c buffalo.Context) error {
