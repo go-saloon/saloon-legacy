@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gobuffalo/buffalo/binding"
 	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/pop/nulls"
 	"github.com/gobuffalo/pop/slices"
@@ -199,4 +200,8 @@ func (v *EmailNotTaken) IsValid(errors *validate.Errors) {
 		// found a user with the same email
 		errors.Add(validators.GenerateKey(v.Name), "An account with that email already exists.")
 	}
+}
+
+type Avatar struct {
+	File binding.File `db:"-" form:"avatar"`
 }

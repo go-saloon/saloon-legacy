@@ -36,11 +36,11 @@
 </div>
 
 <div class="row">
-	<table class="table table-striped col-md-10 offset-md-1">
+	<table class="table table-striped col-md-8 offset-md-2">
 		<thead>
 			<tr>
 				<th>Category</th>
-				<th>Subscribed</th>
+				<th>Status</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -69,7 +69,25 @@
 	<div class="col-md-1">
 		<img class="img-circle" src="data:image/png;base64,<%= current_user.Image() %>" alt="<%= current_user.Username %>">
 	</div>
-	<button type="submit" class="fa fa-pencil btn btn-alert" style="height:50%"></button>
+	<button type="button" class="fa fa-pencil btn btn-alert" style="height:50%" data-toggle="modal" data-target="#user-update-avatar"></button>
 </div>
 
-<button type="submit" class="btn btn-primary mt-5 offset-md-10">Save Changes</button>
+<div class="modal fade" id="user-update-avatar">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Upload new avatar</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<!-- Modal  -->
+			<div class="modal-body">
+				<%= form_for(avatar, {action: usersSettingsUpdateAvatarPath(), method: "POST"}) { %>
+				<%= f.FileTag("File") %>
+				<button class="btn btn-success" role="submit">Upload</button>
+				<a href="<%= usersSettingsUpdateAvatarPath() %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+				<% } %>
+			</div>
+		</div>
+	</div>
+</div>

@@ -7,10 +7,17 @@ package actions
 import (
 	"bytes"
 	"fmt"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
 	"image/png"
 	"sort"
 	"unicode"
 	"unicode/utf8"
+
+	_ "golang.org/x/image/bmp"
+	_ "golang.org/x/image/tiff"
+	_ "golang.org/x/image/webp"
 
 	"github.com/disintegration/letteravatar"
 	"github.com/go-saloon/saloon/models"
@@ -122,6 +129,7 @@ func UsersSettingsGet(c buffalo.Context) error {
 	}
 	sort.Sort(cats)
 	c.Set("categories", cats)
+	c.Set("avatar", new(models.Avatar))
 	return c.Render(200, r.HTML("users/settings"))
 }
 
@@ -158,9 +166,10 @@ func UsersSettingsAddSubscription(c buffalo.Context) error {
 	if err := tx.All(cats); err != nil {
 		return errors.WithStack(err)
 	}
+	sort.Sort(cats)
 	c.Set("categories", cats)
-	c.Set("current_user", usr)
-	return c.Redirect(302, "/users/settings")
+	c.Set("avatar", new(models.Avatar))
+	return c.Render(200, r.HTML("users/settings"))
 }
 
 func UsersSettingsRemoveSubscription(c buffalo.Context) error {
@@ -182,9 +191,55 @@ func UsersSettingsRemoveSubscription(c buffalo.Context) error {
 	if err := tx.All(cats); err != nil {
 		return errors.WithStack(err)
 	}
+	sort.Sort(cats)
+	c.Set("categories", cats)
+	c.Set("avatar", new(models.Avatar))
+	return c.Render(200, r.HTML("users/settings"))
+}
+
+func UsersSettingsUpdateAvatar(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	sort.Sort(cats)
+
+	usr := c.Value("current_user").(*models.User)
+	f, err := c.File("avatar")
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	defer f.Close()
+
+	if !f.Valid() {
+		c.Set("categories", cats)
+		c.Set("current_user", usr)
+		verrs := validate.NewErrors()
+		verrs.Add("Avatar Upload", "Invalid file")
+		c.Set("errors", verrs.Errors)
+		c.Set("avatar", new(models.Avatar))
+		return c.Render(422, r.HTML("users/settings"))
+	}
+
+	img, _, err := image.Decode(f)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	buf := new(bytes.Buffer)
+	if err := png.Encode(buf, img); err != nil {
+		return errors.WithStack(err)
+	}
+
+	usr.Avatar = buf.Bytes()
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
 	c.Set("categories", cats)
 	c.Set("current_user", usr)
-	return c.Redirect(302, "/users/settings")
+	c.Set("avatar", new(models.Avatar))
+	return c.Render(200, r.HTML("users/settings"))
 }
 
 func UsersShow(c buffalo.Context) error {
