@@ -4,7 +4,7 @@
 	</div>
 	<div class="col-md-10">
 		<h4><%= current_user.Username %> </h4>
-		<div><%= current_user.FirstName %> <%= current_user.LastName %></div>
+		<div><%= current_user.FullName %></div>
 	</div>
 </div>
 
@@ -21,7 +21,8 @@
 	<h5 class="col-md-2">Name</h5>
 </div>
 <div class="row"/>
-	<div class="col-md-2"><%= current_user.FirstName %><%= current_user.LastName %></div>
+	<div class="col-md-2"><%= current_user.FullName %></div>
+	<button type="button" class="fa fa-pencil btn btn-alert" style="height:50%" data-toggle="modal" data-target="#user-update-name"></button>
 </div>
 
 <div class="row mt-3">
@@ -70,6 +71,30 @@
 		<img class="img-circle" src="data:image/png;base64,<%= current_user.Image() %>" alt="<%= current_user.Username %>">
 	</div>
 	<button type="button" class="fa fa-pencil btn btn-alert" style="height:50%" data-toggle="modal" data-target="#user-update-avatar"></button>
+</div>
+
+<div class="modal fade" id="user-update-name">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Update name</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<!-- Modal  -->
+			<div class="modal-body">
+				<%= form_for(current_user, {action: usersSettingsUpdateNamePath(), method: "POST"}) { %>
+				<div class="row">
+					<div class="col-md-12">
+						<%= f.InputTag("FullName") %>
+					</div>
+				</div>
+				<button class="btn btn-success" role="submit">Save</button>
+				<a href="<%= usersSettingsUpdateNamePath() %>" class="btn btn-warning">Cancel</a>
+				<% } %>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="modal fade" id="user-update-avatar">

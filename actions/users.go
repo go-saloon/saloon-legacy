@@ -239,7 +239,28 @@ func UsersSettingsUpdateAvatar(c buffalo.Context) error {
 	c.Set("categories", cats)
 	c.Set("current_user", usr)
 	c.Set("avatar", new(models.Avatar))
-	return c.Render(200, r.HTML("users/settings"))
+	return c.Redirect(302, "/users/settings")
+}
+
+func UsersSettingsUpdateName(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	usr := c.Value("current_user").(*models.User)
+	if err := c.Bind(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	sort.Sort(cats)
+	c.Set("categories", cats)
+	c.Set("avatar", new(models.Avatar))
+	return c.Redirect(302, "/users/settings")
 }
 
 func UsersShow(c buffalo.Context) error {

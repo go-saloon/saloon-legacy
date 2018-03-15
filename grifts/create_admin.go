@@ -10,7 +10,6 @@ import (
 	"github.com/go-saloon/saloon/actions"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/pop"
-	"github.com/gobuffalo/pop/nulls"
 	"github.com/markbates/grift/grift"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -61,16 +60,14 @@ var _ = grift.Namespace("db", func() {
 			return models.DB.Transaction(func(tx *pop.Connection) error {
 				for _, usr := range []*models.User{
 					{
-						Username:  "toto",
-						Email:     "toto@example.com",
-						FirstName: nulls.String{String: "Mr", Valid: true},
-						LastName:  nulls.String{String: "Toto", Valid: true},
+						Username: "toto",
+						Email:    "toto@example.com",
+						FullName: "Mr Toto",
 					},
 					{
-						Username:  "tata",
-						Email:     "tata@example.com",
-						FirstName: nulls.String{String: "Mme", Valid: true},
-						LastName:  nulls.String{String: "Tata", Valid: true},
+						Username: "tata",
+						Email:    "tata@example.com",
+						FullName: "Mme Tata",
 					},
 				} {
 					usr.Password = usr.Username
