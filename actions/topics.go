@@ -5,6 +5,7 @@
 package actions
 
 import (
+	"github.com/go-saloon/saloon/mailers"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
@@ -57,7 +58,7 @@ func TopicsCreatePost(c buffalo.Context) error {
 		return c.Render(422, r.HTML("topics/create"))
 	}
 
-	err = notifyCategory(c, topic)
+	err = newTopicNotify(c, topic)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -191,7 +192,7 @@ func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {
 	return topic, nil
 }
 
-func notifyTopic(c buffalo.Context, topic *models.Topic, reply *models.Reply) error {
+func newReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply) error {
 	set := make(map[uuid.UUID]struct{})
 	for _, usr := range topic.Subscribers {
 		set[usr] = struct{}{}
@@ -218,6 +219,11 @@ func notifyTopic(c buffalo.Context, topic *models.Topic, reply *models.Reply) er
 			continue
 		}
 		recpts = append(recpts, usr)
+	}
+
+	err := mailers.NewReplyNotify(c, topic, reply, recpts)
+	if err != nil {
+		return errors.WithStack(err)
 	}
 
 	return nil

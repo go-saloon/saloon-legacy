@@ -36,7 +36,7 @@ List-ID: <root.root-forum.cern.ch>
 List-Archive: http://root-forum.cern.ch/t/load-a-standalone-sharedlibrary/28306
 */
 
-func NotifyCategory(c buffalo.Context, topic *models.Topic, recpts []models.User) error {
+func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User) error {
 	// Creates a new message
 	m := mail.NewMessage()
 	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s@saloon.com>", topic.ID))
@@ -58,8 +58,45 @@ func NotifyCategory(c buffalo.Context, topic *models.Topic, recpts []models.User
 	// You can add multiple bodies to the message you're creating to have content-types alternatives.
 	err := m.AddBodies(
 		data,
-		r.HTML("mail/notify-category.html"),
-		r.Plain("mail/notify-category.txt"),
+		r.HTML("mail/notify.html"),
+		r.Plain("mail/notify.txt"),
+	)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	err = smtp.Send(m)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
+func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply, recpts []models.User) error {
+	// Creates a new message
+	m := mail.NewMessage()
+	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s/%s@saloon.com>", topic.ID, reply.ID))
+	m.SetHeader("List-ID", "forum.saloon.com")
+
+	m.From = fmt.Sprintf("%s <alternatiba63.forum@gmail.com>", reply.Author.Username)
+	m.Subject = topic.Title
+	m.To = nil
+	m.Bcc = nil
+	for _, usr := range recpts {
+		m.Bcc = append(m.Bcc, usr.Email)
+	}
+
+	// Data that will be used inside the templates when rendering.
+	data := map[string]interface{}{
+		"content": reply.Content,
+	}
+
+	// You can add multiple bodies to the message you're creating to have content-types alternatives.
+	err := m.AddBodies(
+		data,
+		r.HTML("mail/notify.html"),
+		r.Plain("mail/notify.txt"),
 	)
 	if err != nil {
 		return errors.WithStack(err)

@@ -56,7 +56,7 @@ func RepliesCreatePost(c buffalo.Context) error {
 	}
 	c.Flash().Add("success", "New reply added successfully.")
 
-	err = notifyTopic(c, topic, reply)
+	err = newReplyNotify(c, topic, reply)
 	if err != nil {
 		return errors.WithStack(err)
 	}

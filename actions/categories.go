@@ -99,7 +99,7 @@ func CategoriesDetail(c buffalo.Context) error {
 	return c.Render(200, r.HTML("categories/detail"))
 }
 
-func notifyCategory(c buffalo.Context, topic *models.Topic) error {
+func newTopicNotify(c buffalo.Context, topic *models.Topic) error {
 	set := make(map[uuid.UUID]struct{})
 	for _, usr := range topic.Subscribers {
 		set[usr] = struct{}{}
@@ -128,7 +128,7 @@ func notifyCategory(c buffalo.Context, topic *models.Topic) error {
 		recpts = append(recpts, usr)
 	}
 
-	err := mailers.NotifyCategory(c, topic, recpts)
+	err := mailers.NewTopicNotify(c, topic, recpts)
 	if err != nil {
 		return errors.WithStack(err)
 	}
