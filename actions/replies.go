@@ -33,6 +33,7 @@ func RepliesCreatePost(c buffalo.Context) error {
 	if err != nil {
 		return c.Error(404, err)
 	}
+	topic.AddSubscriber(user.ID)
 	c.Set("topic", topic)
 	reply.AuthorID = user.ID
 	reply.Author = user
@@ -41,6 +42,10 @@ func RepliesCreatePost(c buffalo.Context) error {
 
 	verrs, err := tx.ValidateAndCreate(reply)
 	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(topic); err != nil {
 		return errors.WithStack(err)
 	}
 
