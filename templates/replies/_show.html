@@ -3,7 +3,7 @@
 	<a class="col-md-1" href="<%= usersShowPath({uid: reply.AuthorID}) %>">
 		<img src="data:image/png;base64,<%= reply.Author.Image() %>" alt="<%= reply.Author.Username %>" style="width:50px;border-radius:50%;">
 	</a>
-	<a class="col-md-2" href="<%= usersShowPath({uid: reply.AuthorID}) %>"> <%= userName(reply.AuthorID) %></a>
+	<a class="col-md-2" href="<%= usersShowPath({uid: reply.AuthorID}) %>"> <%= reply.Author.Username %></a>
 	<div class="col-md-5"></div>
 	<div class="col-md-2 text-right"><%= timeSince(reply.CreatedAt) %> </div>
 </div>

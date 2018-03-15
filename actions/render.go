@@ -10,12 +10,9 @@ import (
 	"math"
 	"time"
 
-	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/packr"
 	"github.com/gobuffalo/plush"
-	"github.com/gobuffalo/pop"
-	"github.com/gobuffalo/uuid"
 )
 
 var r *render.Engine
@@ -33,39 +30,9 @@ func init() {
 			"csrf": func() template.HTML {
 				return template.HTML("<input name=\"authenticity_token\" value=\"<%= authenticity_token %>\" type=\"hidden\">")
 			},
-			"userName":      userName,
-			"categoryTitle": categoryTitle,
-			"topicTitle":    topicTitle,
-			"timeSince":     timeSince,
+			"timeSince": timeSince,
 		},
 	})
-}
-
-func userName(id uuid.UUID, ctx plush.HelperContext) string {
-	tx := ctx.Value("tx").(*pop.Connection)
-	v := new(models.User)
-	if err := tx.Find(v, id); err != nil {
-		return "N/A"
-	}
-	return v.Username
-}
-
-func categoryTitle(id uuid.UUID, ctx plush.HelperContext) string {
-	tx := ctx.Value("tx").(*pop.Connection)
-	v := new(models.Category)
-	if err := tx.Find(v, id); err != nil {
-		return "N/A"
-	}
-	return v.Title
-}
-
-func topicTitle(id uuid.UUID, ctx plush.HelperContext) string {
-	tx := ctx.Value("tx").(*pop.Connection)
-	v := new(models.Topic)
-	if err := tx.Find(v, id); err != nil {
-		return "N/A"
-	}
-	return v.Title
 }
 
 func timeSince(created time.Time, ctx plush.HelperContext) string {
