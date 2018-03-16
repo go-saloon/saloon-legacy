@@ -26,7 +26,7 @@
     "popper.js": "~1.14",
     "sass-loader": "~6.0.6",
     "style-loader": "~0.20.1",
-    "uglifyjs-webpack-plugin": "~0.4.6",
+    "uglifyjs-webpack-plugin": "1",
     "url-loader": "~0.6.2",
     "webpack": "~3.10.0",
     "webpack-manifest-plugin": "~1.2.1"
