@@ -96,6 +96,10 @@ func (u Users) String() string {
 	return string(ju)
 }
 
+func (p Users) Len() int           { return len(p) }
+func (p Users) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p Users) Less(i, j int) bool { return p[i].Username < p[j].Username }
+
 // Create validates and creates a new User.
 func (u *User) Create(tx *pop.Connection) (*validate.Errors, error) {
 	u.Email = strings.ToLower(u.Email)
