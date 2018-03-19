@@ -59,9 +59,9 @@
 				<td>
 					<div class="text-justified">
 						<%= if (current_user.Subscribed(cat.ID)) { %>
-						<a href="<%= usersSettingsRmSubscriptionPath({cid: cat.ID}) %>" class="fa fa-check-square-o text-justified text-secondary"></a>
+						<a href="<%= usersSettingsRmSubscriptionPath({uid: current_user.ID, cid: cat.ID}) %>" class="fa fa-check-square-o text-justified text-secondary"></a>
 						<% } else { %>
-						<a href="<%= usersSettingsAddSubscriptionPath({cid: cat.ID}) %>" class="fa fa-square-o text-justified text-secondary"></a>
+						<a href="<%= usersSettingsAddSubscriptionPath({uid: current_user.ID, cid: cat.ID}) %>" class="fa fa-square-o text-justified text-secondary"></a>
 						<% } %>
 					</div>
 				</td>
@@ -98,7 +98,7 @@
 					</div>
 				</div>
 				<button class="btn btn-success" role="submit">Save</button>
-				<a href="<%= usersSettingsUpdateNamePath() %>" class="btn btn-warning">Cancel</a>
+				<a href="<%= usersSettingsPath() %>" class="btn btn-warning">Cancel</a>
 				<% } %>
 			</div>
 		</div>
@@ -118,7 +118,7 @@
 				<%= form_for(avatar, {action: usersSettingsUpdateAvatarPath(), method: "POST"}) { %>
 				<%= f.FileTag("File") %>
 				<button class="btn btn-success" role="submit">Upload</button>
-				<a href="<%= usersSettingsUpdateAvatarPath() %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+				<a href="<%= usersSettingsPath() %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
 				<% } %>
 			</div>
 		</div>
@@ -142,7 +142,7 @@
 					</div>
 				</div>
 				<button class="btn btn-success" role="submit">Save</button>
-				<a href="<%= usersSettingsUpdateEmailPath() %>" class="btn btn-warning">Cancel</a>
+				<a href="<%= usersSettingsPath() %>" class="btn btn-warning">Cancel</a>
 				<% } %>
 			</div>
 		</div>
@@ -175,3 +175,42 @@
 		</div>
 	</div>
 </div>
+
+<hr class="col">
+
+<%= if (current_user.Admin) { %>
+
+<div class="row mt-5 mb-2">
+	<h5>Users -- Subscriptions</h5>
+</div>
+
+<%= for (usr) in users { %>
+<h6> User: <%= usr.Username %> (<%= usr.Email %>)</h6>
+<div class="row">
+	<table class="table table-striped col-md-8 offset-md-2">
+		<thead>
+			<tr>
+				<th>Category</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<%= for (cat) in categories { %>
+			<tr>
+				<td><a href="<%= categoriesDetailPath({cid: cat.ID}) %>" class="text-secondary"><%= cat.Title %></a></td>
+				<td>
+					<div class="text-justified">
+						<%= if (usr.Subscribed(cat.ID)) { %>
+						<a href="<%= usersSettingsRmSubscriptionPath({uid: usr.ID, cid: cat.ID}) %>" class="fa fa-check-square-o text-justified text-secondary"></a>
+						<% } else { %>
+						<a href="<%= usersSettingsAddSubscriptionPath({uid: usr.ID, cid: cat.ID}) %>" class="fa fa-square-o text-justified text-secondary"></a>
+						<% } %>
+					</div>
+				</td>
+			</tr>
+			<% } %>
+		</tbody>
+	</table>
+</div>
+<% } %>
+<% } %>

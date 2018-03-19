@@ -131,6 +131,15 @@ func UsersSettings(c buffalo.Context) error {
 	sort.Sort(cats)
 	c.Set("categories", cats)
 	c.Set("avatar", new(models.Avatar))
+	usr := c.Value("current_user").(*models.User)
+	if usr.Admin {
+		users := new(models.Users)
+		if err := tx.All(users); err != nil {
+			return errors.WithStack(err)
+		}
+		sort.Sort(users)
+		c.Set("users", users)
+	}
 	return c.Render(200, r.HTML("users/settings"))
 }
 
@@ -140,7 +149,10 @@ func UsersSettingsAddSubscription(c buffalo.Context) error {
 	if err := tx.Find(cat, c.Param("cid")); err != nil {
 		return errors.WithStack(err)
 	}
-	usr := c.Value("current_user").(*models.User)
+	usr := new(models.User)
+	if err := tx.Find(usr, c.Param("uid")); err != nil {
+		return errors.WithStack(err)
+	}
 	usr.AddSubscription(cat.ID)
 	cat.AddSubscriber(usr.ID)
 
@@ -150,14 +162,6 @@ func UsersSettingsAddSubscription(c buffalo.Context) error {
 	if err := tx.Update(cat); err != nil {
 		return errors.WithStack(err)
 	}
-
-	cats := new(models.Categories)
-	if err := tx.All(cats); err != nil {
-		return errors.WithStack(err)
-	}
-	sort.Sort(cats)
-	c.Set("categories", cats)
-	c.Set("avatar", new(models.Avatar))
 	return c.Redirect(302, "/users/settings")
 }
 
@@ -167,7 +171,10 @@ func UsersSettingsRemoveSubscription(c buffalo.Context) error {
 	if err := tx.Find(cat, c.Param("cid")); err != nil {
 		return errors.WithStack(err)
 	}
-	usr := c.Value("current_user").(*models.User)
+	usr := new(models.User)
+	if err := tx.Find(usr, c.Param("uid")); err != nil {
+		return errors.WithStack(err)
+	}
 	usr.RemoveSubscription(cat.ID)
 	if err := tx.Update(usr); err != nil {
 		return errors.WithStack(err)
@@ -176,13 +183,6 @@ func UsersSettingsRemoveSubscription(c buffalo.Context) error {
 	if err := tx.Update(cat); err != nil {
 		return errors.WithStack(err)
 	}
-	cats := new(models.Categories)
-	if err := tx.All(cats); err != nil {
-		return errors.WithStack(err)
-	}
-	sort.Sort(cats)
-	c.Set("categories", cats)
-	c.Set("avatar", new(models.Avatar))
 	return c.Redirect(302, "/users/settings")
 }
 
@@ -202,8 +202,6 @@ func UsersSettingsUpdateAvatar(c buffalo.Context) error {
 	defer f.Close()
 
 	if !f.Valid() {
-		c.Set("categories", cats)
-		c.Set("current_user", usr)
 		verrs := validate.NewErrors()
 		verrs.Add("Avatar Upload", "Invalid file")
 		c.Set("errors", verrs.Errors)
@@ -225,9 +223,6 @@ func UsersSettingsUpdateAvatar(c buffalo.Context) error {
 		return errors.WithStack(err)
 	}
 
-	c.Set("categories", cats)
-	c.Set("current_user", usr)
-	c.Set("avatar", new(models.Avatar))
 	return c.Redirect(302, "/users/settings")
 }
 
@@ -242,13 +237,6 @@ func UsersSettingsUpdateName(c buffalo.Context) error {
 		return errors.WithStack(err)
 	}
 
-	cats := new(models.Categories)
-	if err := tx.All(cats); err != nil {
-		return errors.WithStack(err)
-	}
-	sort.Sort(cats)
-	c.Set("categories", cats)
-	c.Set("avatar", new(models.Avatar))
 	return c.Redirect(302, "/users/settings")
 }
 
@@ -262,14 +250,6 @@ func UsersSettingsUpdateEmail(c buffalo.Context) error {
 	if err := tx.Update(usr); err != nil {
 		return errors.WithStack(err)
 	}
-
-	cats := new(models.Categories)
-	if err := tx.All(cats); err != nil {
-		return errors.WithStack(err)
-	}
-	sort.Sort(cats)
-	c.Set("categories", cats)
-	c.Set("avatar", new(models.Avatar))
 	return c.Redirect(302, "/users/settings")
 }
 
@@ -290,14 +270,6 @@ func UsersSettingsUpdatePassword(c buffalo.Context) error {
 	if err := tx.Update(usr); err != nil {
 		return errors.WithStack(err)
 	}
-
-	cats := new(models.Categories)
-	if err := tx.All(cats); err != nil {
-		return errors.WithStack(err)
-	}
-	sort.Sort(cats)
-	c.Set("categories", cats)
-	c.Set("avatar", new(models.Avatar))
 	return c.Redirect(302, "/users/settings")
 }
 
