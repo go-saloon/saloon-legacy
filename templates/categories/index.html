@@ -1,19 +1,29 @@
 <div class="row">
-	<div class="col-md-3 offset-md-9">
+	<div class="col-md-2 offset-md-10 text-right">
 		<%= if (current_user.Admin) { %>
 		<a href="<%= categoriesCreatePath() %>" class="btn btn-primary">Add Category</a>
 		<% } %>
 	</div>
 </div>
+
+<div class="row mt-3">
+	<div class="col-md-8">Category</div>
+	<div class="col-md-2 text-center">Topics</div>
+	<div class="col-md-2 text-center">Activity</div>
+</div>
+
+<%= for (c) in categories { %>
 <div class="row">
+	<hr class="col-md-12">
 	<div class="col-md-8">
-		<%= for (c) in categories { %>
-		<hr>
 		<a href="<%= categoriesDetailPath({cid: c.ID}) %>"><h1><%= c.Title %></h1></a>
 		<p><%= if (c.Description.Valid) { markdown(truncate(c.Description.String, {"size": 200})) } %></p>
-		<% } %>
 	</div>
 </div>
+<% } %>
+
+<hr class="col">
+
 <div class="row">
 	<div class="col">
 		<%= paginator(pagination) %>
