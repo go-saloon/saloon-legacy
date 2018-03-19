@@ -67,6 +67,7 @@ func UsersRegisterPost(c buffalo.Context) error {
 	}
 	// If there are no errors set a success message
 	c.Flash().Add("success", "Account created successfully.")
+	c.Session().Set("current_user_id", user.ID)
 	// and redirect to the home page
 	return c.Redirect(302, "/")
 }
