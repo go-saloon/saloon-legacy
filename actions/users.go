@@ -15,6 +15,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"golang.org/x/crypto/bcrypt"
 	_ "golang.org/x/image/bmp"
 	_ "golang.org/x/image/tiff"
 	_ "golang.org/x/image/webp"
@@ -236,6 +237,55 @@ func UsersSettingsUpdateName(c buffalo.Context) error {
 	if err := c.Bind(usr); err != nil {
 		return errors.WithStack(err)
 	}
+
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	sort.Sort(cats)
+	c.Set("categories", cats)
+	c.Set("avatar", new(models.Avatar))
+	return c.Redirect(302, "/users/settings")
+}
+
+func UsersSettingsUpdateEmail(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	usr := c.Value("current_user").(*models.User)
+	if err := c.Bind(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	sort.Sort(cats)
+	c.Set("categories", cats)
+	c.Set("avatar", new(models.Avatar))
+	return c.Redirect(302, "/users/settings")
+}
+
+func UsersSettingsUpdatePassword(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	usr := c.Value("current_user").(*models.User)
+	if err := c.Bind(usr); err != nil {
+		return errors.WithStack(err)
+	}
+
+	pwd, err := bcrypt.GenerateFromPassword([]byte(usr.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	usr.PasswordHash = string(pwd)
 
 	if err := tx.Update(usr); err != nil {
 		return errors.WithStack(err)
