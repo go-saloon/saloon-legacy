@@ -9,6 +9,7 @@ import (
 	"image/png"
 	"os"
 
+	"golang.org/x/crypto/bcrypt"
 	_ "golang.org/x/image/bmp"
 	_ "golang.org/x/image/tiff"
 	_ "golang.org/x/image/webp"
@@ -21,12 +22,42 @@ import (
 
 var _ = grift.Namespace("db", func() {
 
+	grift.Add("update-password", func(c *grift.Context) error {
+		fset := flag.NewFlagSet("update-password", flag.ExitOnError)
+		usrname := fset.String("u", "", "user name")
+		password := fset.String("p", "", "user new password")
+
+		if err := fset.Parse(c.Args); err != nil {
+			return errors.WithStack(err)
+		}
+
+		return models.DB.Transaction(func(tx *pop.Connection) error {
+			usr := new(models.User)
+			usr.Username = *usrname
+			if err := tx.Where("username = ?", *usrname).First(usr); err != nil {
+				return errors.WithStack(err)
+			}
+
+			usr.Password = *password
+			pwd, err := bcrypt.GenerateFromPassword([]byte(*password), bcrypt.DefaultCost)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			usr.PasswordHash = string(pwd)
+
+			if err := tx.Update(usr); err != nil {
+				return errors.WithStack(err)
+			}
+			return nil
+		})
+	})
+
 	grift.Desc("seed", "Seeds a database")
 	grift.Add("seed", func(c *grift.Context) error {
 		for _, name := range []string{
 			"db:setup",
 			"db:seed:create-forum",
-			"db:seed:create-categories",
+			// "db:seed:create-categories",
 		} {
 			err := grift.Run(name, c)
 			if err != nil {
