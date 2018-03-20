@@ -24,12 +24,13 @@ var smtp mail.Sender
 var r *render.Engine
 
 var notify struct {
-	ReplyTo    string
-	MessageID  string
-	InReplyTo  string
-	ListID     string
-	SubjectHdr string
-	From       string
+	ReplyTo     string
+	MessageID   string
+	InReplyTo   string
+	ListID      string
+	ListArchive string
+	SubjectHdr  string
+	From        string
 }
 
 func init() {
@@ -45,6 +46,7 @@ func init() {
 	notify.MessageID = envy.Get("SALOON_MAIL_NOTIFY_MESSAGE_ID", "")
 	notify.InReplyTo = envy.Get("SALOON_MAIL_NOTIFY_IN_REPLY_TO", "")
 	notify.ListID = envy.Get("SALOON_MAIL_NOTIFY_LIST_ID", "")
+	notify.ListArchive = envy.Get("SALOON_MAIL_NOTIFY_LIST_ARCHIVE", "")
 	notify.SubjectHdr = envy.Get("SALOON_MAIL_NOTIFY_SUBJECT_HDR", "")
 	notify.From = envy.Get("SALOON_MAIL_NOTIFY_FROM", "")
 

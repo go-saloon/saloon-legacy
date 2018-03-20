@@ -13,12 +13,18 @@ import (
 	"github.com/pkg/errors"
 )
 
+/*
+List-Post: <mailto:reply+00105748c619555d4a6c80b4faccec22003b863b33e73ae092cf0000000116c2ac9c92a169ce1238ebbe@reply.github.com>
+List-Unsubscribe: <mailto:unsub+00105748c619555d4a6c80b4faccec22003b863b33e73ae092cf0000000116c2ac9c92a169ce1238ebbe@reply.github.com>, <https://github.com/notifications/unsubscribe/ABBXSLhgVLtfNtdMGG1Y0aRw9bFiNJc_ks5teuIcgaJpZM4Ss4xE>
+*/
+
 func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User) error {
-	// Creates a new message
 	m := mail.NewMessage()
 	m.SetHeader("Reply-To", notify.ReplyTo)
 	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s@%s>", topic.ID, notify.MessageID))
 	m.SetHeader("List-ID", notify.ListID)
+	m.SetHeader("List-Archive", notify.ListArchive)
+	m.SetHeader("X-Auto-Response-Suppress", "All")
 
 	m.Subject = notify.SubjectHdr + " " + topic.Title
 	m.From = fmt.Sprintf("%s <%s>", topic.Author.Username, notify.From)
@@ -28,16 +34,14 @@ func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User
 		m.Bcc = append(m.Bcc, usr.Email)
 	}
 
-	// Data that will be used inside the templates when rendering.
 	data := map[string]interface{}{
 		"content": topic.Content,
 	}
 
-	// You can add multiple bodies to the message you're creating to have content-types alternatives.
 	err := m.AddBodies(
 		data,
-		r.HTML("mail/notify.html"),
 		r.Plain("mail/notify.txt"),
+		r.HTML("mail/notify.html"),
 	)
 	if err != nil {
 		return errors.WithStack(err)
@@ -52,12 +56,13 @@ func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User
 }
 
 func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply, recpts []models.User) error {
-	// Creates a new message
 	m := mail.NewMessage()
 	m.SetHeader("Reply-To", notify.ReplyTo)
 	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s/%s@%s>", topic.ID, reply.ID, notify.MessageID))
 	m.SetHeader("In-Reply-To", fmt.Sprintf("<topic/%s@%s>", topic.ID, notify.InReplyTo))
 	m.SetHeader("List-ID", notify.ListID)
+	m.SetHeader("List-Archive", notify.ListArchive)
+	m.SetHeader("X-Auto-Response-Suppress", "All")
 
 	m.Subject = notify.SubjectHdr + " " + topic.Title
 	m.From = fmt.Sprintf("%s <%s>", reply.Author.Username, notify.From)
@@ -67,16 +72,14 @@ func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply,
 		m.Bcc = append(m.Bcc, usr.Email)
 	}
 
-	// Data that will be used inside the templates when rendering.
 	data := map[string]interface{}{
 		"content": reply.Content,
 	}
 
-	// You can add multiple bodies to the message you're creating to have content-types alternatives.
 	err := m.AddBodies(
 		data,
-		r.HTML("mail/notify.html"),
 		r.Plain("mail/notify.txt"),
+		r.HTML("mail/notify.html"),
 	)
 	if err != nil {
 		return errors.WithStack(err)
