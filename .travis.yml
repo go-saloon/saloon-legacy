@@ -19,6 +19,8 @@ services:
 
 before_script:
   - buffalo db create -a
+  - buffalo db migrate
+  - buffalo t db:setup
   - mkdir -p $TRAVIS_BUILD_DIR/public/assets
   - go get github.com/gobuffalo/suite
 
