@@ -49,9 +49,7 @@ func UsersRegisterPost(c buffalo.Context) error {
 		return errors.WithStack(err)
 	}
 	user.Avatar = avatar
-	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
-	// Validate the data from the html form
 	verrs, err := user.Create(tx)
 	if err != nil {
 		return errors.WithStack(err)
