@@ -24,6 +24,7 @@ func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User
 	m.SetHeader("Message-ID", fmt.Sprintf("<topic/%s@%s>", topic.ID, notify.MessageID))
 	m.SetHeader("List-ID", notify.ListID)
 	m.SetHeader("List-Archive", notify.ListArchive)
+	m.SetHeader("List-Unsubscribe", notify.ListUnsubscribe)
 	m.SetHeader("X-Auto-Response-Suppress", "All")
 
 	m.Subject = notify.SubjectHdr + " " + topic.Title
@@ -35,7 +36,8 @@ func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User
 	}
 
 	data := map[string]interface{}{
-		"content": topic.Content,
+		"content":     topic.Content,
+		"unsubscribe": notify.ListUnsubscribe,
 	}
 
 	err := m.AddBodies(
@@ -62,6 +64,7 @@ func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply,
 	m.SetHeader("In-Reply-To", fmt.Sprintf("<topic/%s@%s>", topic.ID, notify.InReplyTo))
 	m.SetHeader("List-ID", notify.ListID)
 	m.SetHeader("List-Archive", notify.ListArchive)
+	m.SetHeader("List-Unsubscribe", notify.ListUnsubscribe)
 	m.SetHeader("X-Auto-Response-Suppress", "All")
 
 	m.Subject = notify.SubjectHdr + " " + topic.Title
@@ -73,7 +76,8 @@ func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply,
 	}
 
 	data := map[string]interface{}{
-		"content": reply.Content,
+		"content":     reply.Content,
+		"unsubscribe": notify.ListUnsubscribe,
 	}
 
 	err := m.AddBodies(

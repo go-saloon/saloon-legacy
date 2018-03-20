@@ -2,4 +2,4 @@
 
 ---
 
-To unsubscribe: (TODO)
+To unsubscribe: {{ .unsubscribe }}
