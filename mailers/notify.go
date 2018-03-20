@@ -38,6 +38,7 @@ func NewTopicNotify(c buffalo.Context, topic *models.Topic, recpts []models.User
 	data := map[string]interface{}{
 		"content":     topic.Content,
 		"unsubscribe": notify.ListUnsubscribe,
+		"visit":       notify.ListArchive + "/topics/detail/" + topic.ID.String(),
 	}
 
 	err := m.AddBodies(
@@ -78,6 +79,7 @@ func NewReplyNotify(c buffalo.Context, topic *models.Topic, reply *models.Reply,
 	data := map[string]interface{}{
 		"content":     reply.Content,
 		"unsubscribe": notify.ListUnsubscribe,
+		"visit":       notify.ListArchive + "/topics/detail/" + topic.ID.String(),
 	}
 
 	err := m.AddBodies(
