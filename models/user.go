@@ -114,7 +114,7 @@ func (u *User) Create(tx *pop.Connection) (*validate.Errors, error) {
 
 // Authorize checks user's password for logging in
 func (u *User) Authorize(tx *pop.Connection) error {
-	err := tx.Where("username = ?", strings.ToLower(u.Username)).First(u)
+	err := tx.Where("username = ?", u.Username).First(u)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
 			// couldn't find a user with that username
@@ -140,7 +140,6 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		&validators.StringIsPresent{Field: u.Username, Name: "Username"},
 		&validators.StringIsPresent{Field: u.Password, Name: "Password"},
 		&validators.StringsMatch{Name: "Password", Field: u.Password, Field2: u.PasswordConfirm, Message: "Passwords do not match."},
-		&UsernameIsLowerCase{Name: "Username", Field: u.Username, tx: tx},
 		&UsernameNotTaken{Name: "Username", Field: u.Username, tx: tx},
 		&EmailNotTaken{Name: "Email", Field: u.Email, tx: tx},
 	), nil
