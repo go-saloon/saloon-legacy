@@ -1,8 +1,13 @@
+// Copyright 2018 The go-saloon Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package grifts
 
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
@@ -14,6 +19,7 @@ import (
 	_ "golang.org/x/image/tiff"
 	_ "golang.org/x/image/webp"
 
+	"github.com/go-saloon/saloon/actions"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/pop"
 	"github.com/markbates/grift/grift"
@@ -22,42 +28,18 @@ import (
 
 var _ = grift.Namespace("db", func() {
 
-	grift.Add("update-password", func(c *grift.Context) error {
-		fset := flag.NewFlagSet("update-password", flag.ExitOnError)
-		usrname := fset.String("u", "", "user name")
-		password := fset.String("p", "", "user new password")
-
-		if err := fset.Parse(c.Args); err != nil {
-			return errors.WithStack(err)
-		}
-
+	grift.Desc("reset", "Reset (truncate) the whole database")
+	grift.Add("reset", func(c *grift.Context) error {
 		return models.DB.Transaction(func(tx *pop.Connection) error {
-			usr := new(models.User)
-			usr.Username = *usrname
-			if err := tx.Where("username = ?", *usrname).First(usr); err != nil {
-				return errors.WithStack(err)
-			}
-
-			usr.Password = *password
-			pwd, err := bcrypt.GenerateFromPassword([]byte(*password), bcrypt.DefaultCost)
-			if err != nil {
-				return errors.WithStack(err)
-			}
-			usr.PasswordHash = string(pwd)
-
-			if err := tx.Update(usr); err != nil {
-				return errors.WithStack(err)
-			}
-			return nil
+			return tx.TruncateAll()
 		})
 	})
 
-	grift.Desc("seed", "Seeds a database")
-	grift.Add("seed", func(c *grift.Context) error {
+	grift.Desc("setup", "Initial db setup")
+	grift.Add("setup", func(c *grift.Context) error {
 		for _, name := range []string{
-			"db:setup",
-			"db:seed:create-forum",
-			// "db:seed:create-categories",
+			"db:setup:create-admin",
+			"db:setup:create-forum",
 		} {
 			err := grift.Run(name, c)
 			if err != nil {
@@ -67,24 +49,38 @@ var _ = grift.Namespace("db", func() {
 		return nil
 	})
 
-	grift.Desc("seed:create-categories", "Create a few default categories")
-	grift.Add("seed:create-categories", func(c *grift.Context) error {
+	grift.Desc("setup:create-admin", "Create a default admin account")
+	grift.Add("setup:create-admin", func(c *grift.Context) error {
+		fset := flag.NewFlagSet("create-admin", flag.ExitOnError)
+		pass := fset.String("p", "", "admin password")
+		mail := fset.String("e", "", "admin email")
+
+		if *pass == "" {
+			*pass = "admin"
+		}
+
 		return models.DB.Transaction(func(tx *pop.Connection) error {
-			for _, cat := range []*models.Category{
-				{Title: "Category-1"},
-				{Title: "Category-2"},
-			} {
-				err := tx.Create(cat)
-				if err != nil {
-					return errors.WithStack(err)
-				}
+			usr := &models.User{
+				Username: "admin",
+				Email:    *mail,
+				Password: *pass,
+				Admin:    true,
 			}
-			return nil
+			pwd, err := bcrypt.GenerateFromPassword([]byte(usr.Password), bcrypt.DefaultCost)
+			if err != nil {
+				return fmt.Errorf("could not generate password hash: %v", err)
+			}
+			usr.PasswordHash = string(pwd)
+			usr.Avatar, err = actions.GenAvatar(usr.Username)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			return tx.Create(usr)
 		})
 	})
 
-	grift.Desc("seed:create-forum", "Create forum welcome message")
-	grift.Add("seed:create-forum", func(c *grift.Context) error {
+	grift.Desc("setup:create-forum", "Create forum welcome message")
+	grift.Add("setup:create-forum", func(c *grift.Context) error {
 		fset := flag.NewFlagSet("create-forum", flag.ExitOnError)
 		fname := fset.String("logo", "", "path to a logo image")
 		title := fset.String("title", "Saloon", "title of the forum")
@@ -125,6 +121,37 @@ var _ = grift.Namespace("db", func() {
 			}
 			err = tx.Create(forum)
 			if err != nil {
+				return errors.WithStack(err)
+			}
+			return nil
+		})
+	})
+
+	grift.Desc("update-user-password", "Update and change a user password")
+	grift.Add("update-user-password", func(c *grift.Context) error {
+		fset := flag.NewFlagSet("update-user-password", flag.ExitOnError)
+		usrname := fset.String("u", "", "user name")
+		password := fset.String("p", "", "user new password")
+
+		if err := fset.Parse(c.Args); err != nil {
+			return errors.WithStack(err)
+		}
+
+		return models.DB.Transaction(func(tx *pop.Connection) error {
+			usr := new(models.User)
+			usr.Username = *usrname
+			if err := tx.Where("username = ?", *usrname).First(usr); err != nil {
+				return errors.WithStack(err)
+			}
+
+			usr.Password = *password
+			pwd, err := bcrypt.GenerateFromPassword([]byte(*password), bcrypt.DefaultCost)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			usr.PasswordHash = string(pwd)
+
+			if err := tx.Update(usr); err != nil {
 				return errors.WithStack(err)
 			}
 			return nil
