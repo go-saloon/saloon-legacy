@@ -5,6 +5,7 @@
 package grifts
 
 import (
+	"flag"
 	"fmt"
 
 	"github.com/go-saloon/saloon/actions"
@@ -21,7 +22,7 @@ var _ = grift.Namespace("db", func() {
 	grift.Add("setup", func(c *grift.Context) error {
 		for _, name := range []string{
 			"db:setup:create-admin",
-			"db:setup:create-dummy-users",
+			// "db:setup:create-dummy-users",
 		} {
 			err := grift.Run(name, c)
 			if err != nil {
@@ -35,11 +36,15 @@ var _ = grift.Namespace("db", func() {
 
 		grift.Desc("create-admin", "Create a default admin account")
 		grift.Add("create-admin", func(c *grift.Context) error {
+			fset := flag.NewFlagSet("create-admin", flag.ExitOnError)
+			pass := fset.String("p", "", "admin password")
+			mail := fset.String("e", "", "admin email")
+
 			return models.DB.Transaction(func(tx *pop.Connection) error {
 				usr := &models.User{
 					Username: "admin",
-					Email:    "admin@example.com",
-					Password: "admin",
+					Email:    *mail,
+					Password: *pass,
 					Admin:    true,
 				}
 				pwd, err := bcrypt.GenerateFromPassword([]byte(usr.Password), bcrypt.DefaultCost)
