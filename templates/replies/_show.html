@@ -1,4 +1,4 @@
-<hr class="col-md-10 ml-2">
+<hr class="col-md-10 ml-2" id="<%= reply.ID %>">
 <div class="row">
 	<a class="col-md-1" href="<%= usersShowPath({uid: reply.AuthorID}) %>">
 		<img src="data:image/png;base64,<%= reply.Author.Image() %>" alt="<%= reply.Author.Username %>" style="width:50px;border-radius:50%;">

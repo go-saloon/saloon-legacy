@@ -29,7 +29,7 @@
 <%= for (topic) in topics { %>
 <div class="row">
 	<%= if (!topic.Deleted) { %>
-	<hr class="col-md-12 col-sm-12">
+	<hr class="col-md-12 col-sm-12" id="<%= topic.ID %>">
 	<div class="col-md-8">
 		<a href="<%= topicsDetailPath({tid: topic.ID}) %>" class="text-secondary">
 			<%= topic.Title %>
@@ -47,5 +47,5 @@
 	<% } %>
 </div>
 <% } %>
-<hr class="col-md-12 col-sm-12">
 
+<hr class="col-md-12 col-sm-12">
