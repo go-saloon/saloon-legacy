@@ -1,0 +1,29 @@
+<h1>Search</h1>
+
+<div class="row">
+	<%= form({action: "/search", method: "GET"}) { %>
+	<div class="col">
+		<%= f.InputTag({name: "query", placeholder: "enter search query here", value: params["query"]}) %>
+	</div>
+	<div class="col-md-1">
+		<button class="btn btn-primary">Search</button>
+	</div>
+	<% } %>
+</div>
+
+<%= if (results) { %>
+
+<h2>matches: <%= results.Total %>, took <%= results.Took %></h2>
+
+<ol>
+	<%= for (hit) in results.Hits { %>
+	<li>
+		<a href="<%= hit.ID %>"><%= hit.ID %></a> (<%= score(hit.Score) %>)
+		<%= for (body) in hit.Fragments["content"] { %>
+		<%= debug(body) %>
+		<% } %>
+	</li>
+	<% } %>
+</ol>
+<% } %>
+

@@ -108,6 +108,8 @@ func App() *buffalo.App {
 		replyGroup.GET("/edit", RepliesEdit)
 		replyGroup.GET("/delete", RepliesDelete)
 		replyGroup.GET("/detail", RepliesDetail)
+
+		app.GET("/search", UserRequired(Search))
 	}
 
 	return app

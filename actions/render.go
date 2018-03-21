@@ -31,6 +31,9 @@ func init() {
 				return template.HTML("<input name=\"authenticity_token\" value=\"<%= authenticity_token %>\" type=\"hidden\">")
 			},
 			"timeSince": timeSince,
+			"score": func(f float64) string {
+				return fmt.Sprintf("%.2f%%", f*100)
+			},
 		},
 	})
 }
