@@ -2,5 +2,5 @@ create_table("forums", func(t) {
 	t.Column("id", "uuid", {"primary": true})
 	t.Column("title", "string", {})
 	t.Column("description", "string", {})
-	t.Column("logo", "bytea", {})
+	t.Column("logo", "blob", {})
 })
