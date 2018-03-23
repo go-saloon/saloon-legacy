@@ -39,11 +39,9 @@ func init() {
 	wrkr.Register("index-db", func(args worker.Args) error {
 		return indexDB()
 	})
-
-	go runIndex()
 }
 
-func runIndex() {
+func runDBSearchIndex() {
 	tick := time.NewTicker(30 * time.Minute)
 	defer tick.Stop()
 

@@ -111,6 +111,9 @@ func App() *buffalo.App {
 		replyGroup.GET("/detail", RepliesDetail)
 
 		app.GET("/search", UserRequired(Search))
+
+		// launch the db indexing
+		go runDBSearchIndex()
 	}
 
 	return app
