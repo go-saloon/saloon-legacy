@@ -105,7 +105,8 @@ func App() *buffalo.App {
 		replyGroup.Use(UserRequired)
 		replyGroup.GET("/create", RepliesCreateGet)
 		replyGroup.POST("/create", RepliesCreatePost)
-		replyGroup.GET("/edit", RepliesEdit)
+		replyGroup.GET("/edit", RepliesEditGet)
+		replyGroup.POST("/edit", RepliesEditPost)
 		replyGroup.GET("/delete", RepliesDelete)
 		replyGroup.GET("/detail", RepliesDetail)
 

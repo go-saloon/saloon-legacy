@@ -64,9 +64,33 @@ func RepliesCreatePost(c buffalo.Context) error {
 	return c.Redirect(302, "/topics/detail/%s", topic.ID)
 }
 
-// RepliesEdit default implementation.
-func RepliesEdit(c buffalo.Context) error {
-	return c.Render(200, r.HTML("replies/edit.html"))
+func RepliesEditGet(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	reply := &models.Reply{}
+	if err := tx.Find(reply, c.Param("rid")); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("reply", reply)
+	reply.Author = c.Value("current_user").(*models.User)
+	return c.Render(200, r.HTML("replies/edit"))
+}
+
+func RepliesEditPost(c buffalo.Context) error {
+	tx := c.Value("tx").(*pop.Connection)
+	reply := new(models.Reply)
+	if err := tx.Find(reply, c.Param("rid")); err != nil {
+		return errors.WithStack(err)
+	}
+	if err := c.Bind(reply); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(reply); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Flash().Add("success", "Reply edited successfully.")
+
+	return c.Redirect(302, "/topics/detail/%s#%s", reply.TopicID, reply.ID)
 }
 
 func RepliesDelete(c buffalo.Context) error {

@@ -1,8 +1,28 @@
-<div class="page-header">
-	<h1>Edit Reply</h1>
+<div class="row">
+	<div class="col">
+		<%= if (errors) { %>
+		<%= for (key, val) in errors { %>
+		<div class="alert alert-danger alert-dismissible fade show m-1" role="alert">
+			<%= val %>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<% } %>
+		<% } %>
+	</div>
 </div>
 
-<%= form_for(reply, {action: replyPath({ reply_id: reply.ID }), method: "PUT"}) { %>
-<%= partial("replies/form.html") %>
-<a href="<%= replyPath({ reply_id: reply.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
-<% } %>
+<div class="row mt-3 justify-content-center">
+	<div class="col-md-8 col-sm-10">
+		<h2>Edit Reply</h2>
+		<%= csrf() %>
+		<div>
+			<%= form_for(reply, {action: editRepliesPath({ rid: reply.ID }), method: "POST"}) { %>
+			<%= f.TextArea("Content", {rows: 20, hide_label: true}) %>
+			<button class="btn btn-success" role="submit">Update</button>
+			<a href="<%= editRepliesPath({ rid: reply.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+			<% } %>
+		</div>
+	</div>
+</div>
