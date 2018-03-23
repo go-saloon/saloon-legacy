@@ -5,6 +5,8 @@
 package actions
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"html/template"
 	"math"
@@ -13,6 +15,8 @@ import (
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/packr"
 	"github.com/gobuffalo/plush"
+	"github.com/pkg/errors"
+	"github.com/shurcooL/github_flavored_markdown"
 )
 
 var r *render.Engine
@@ -34,6 +38,7 @@ func init() {
 			"score": func(f float64) string {
 				return fmt.Sprintf("%.2f%%", f*100)
 			},
+			"markdown": markdownHelper,
 		},
 	})
 }
@@ -59,4 +64,89 @@ func timeSince(created time.Time, ctx plush.HelperContext) string {
 		return fmt.Sprintf("%dm", int(delta.Minutes()))
 	}
 	return fmt.Sprintf("%ds", int(delta.Seconds()))
+}
+
+func markdownHelper(body string, help plush.HelperContext) (template.HTML, error) {
+	var err error
+	if help.HasBlock() {
+		body, err = help.Block()
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return markdown(body)
+}
+
+func markdown(body string) (template.HTML, error) {
+	type segment struct {
+		code bool
+		data []byte
+	}
+
+	var (
+		code = []byte("```")
+		nln  = []byte("\n")
+	)
+
+	var blocks []segment
+	r := bufio.NewScanner(bytes.NewReader([]byte(body)))
+	for r.Scan() {
+		txt := r.Bytes()
+		switch {
+		case bytes.HasPrefix(txt, code):
+			switch n := len(blocks); n {
+			case 0:
+				// first code-block
+				blk := segment{code: true}
+				blk.data = append(blk.data, txt...)
+				blk.data = append(blk.data, nln...)
+				blocks = append(blocks, blk)
+			default:
+				blk := &blocks[n-1]
+				switch blk.code {
+				case true:
+					// closing code-block
+					blk.data = append(blk.data, txt...)
+					blk.data = append(blk.data, nln...)
+					blocks = append(blocks, segment{code: false})
+				case false:
+					// opening code-block
+					blk := segment{code: true}
+					blk.data = append(blk.data, txt...)
+					blk.data = append(blk.data, nln...)
+					blocks = append(blocks, blk)
+				}
+			}
+		default:
+			switch n := len(blocks); n {
+			case 0:
+				blk := segment{code: false}
+				blk.data = append(blk.data, txt...)
+				blk.data = append(blk.data, nln...)
+				blocks = append(blocks, blk)
+			default:
+				blk := &blocks[n-1]
+				blk.data = append(blk.data, txt...)
+				blk.data = append(blk.data, nln...)
+			}
+		}
+	}
+
+	out := new(bytes.Buffer)
+	for _, blk := range blocks {
+		var data []byte
+		switch blk.code {
+		case true:
+			data = blk.data
+		case false:
+			data = []byte(template.HTMLEscapeString(string(blk.data)))
+		}
+		_, err := out.Write(github_flavored_markdown.Markdown(data))
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+	}
+
+	return template.HTML(out.Bytes()), nil
 }
