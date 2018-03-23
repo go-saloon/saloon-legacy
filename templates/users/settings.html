@@ -181,11 +181,12 @@
 <%= if (current_user.Admin) { %>
 
 <div class="row mt-5 mb-2">
-	<h5>Users -- Subscriptions</h5>
+	<h5>Users: <%= len(users)-1 %></h5>
 </div>
 
 <%= for (usr) in users { %>
-<h6> User: <%= usr.Username %> (<%= usr.Email %>)</h6>
+<%= if (current_user.Username != usr.Username) { %>
+<h6> User: <%= usr.Username %> <%= if (usr.Email != "") { %> (<%= usr.Email %>)  <% } %></h6>
 <div class="row">
 	<table class="table table-striped col-md-8 offset-md-2">
 		<thead>
@@ -212,5 +213,6 @@
 		</tbody>
 	</table>
 </div>
+<% } %>
 <% } %>
 <% } %>
