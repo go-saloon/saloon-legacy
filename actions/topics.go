@@ -5,6 +5,8 @@
 package actions
 
 import (
+	"sort"
+
 	"github.com/go-saloon/saloon/mailers"
 	"github.com/go-saloon/saloon/models"
 	"github.com/gobuffalo/buffalo"
@@ -189,6 +191,7 @@ func loadTopic(c buffalo.Context, tid string) (*models.Topic, error) {
 		replies = append(replies, *reply)
 	}
 	topic.Replies = replies
+	sort.Sort(topic.Replies)
 	return topic, nil
 }
 

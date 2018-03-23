@@ -34,3 +34,7 @@ func (p *Reply) Validate(tx *pop.Connection) (*validate.Errors, error) {
 		&validators.StringIsPresent{Field: p.Content, Name: "Content"},
 	), nil
 }
+
+func (p Replies) Len() int           { return len(p) }
+func (p Replies) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p Replies) Less(i, j int) bool { return p[i].CreatedAt.Before(p[j].CreatedAt) }

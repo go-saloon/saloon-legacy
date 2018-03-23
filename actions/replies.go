@@ -1,3 +1,7 @@
+// Copyright 2018 The go-saloon Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package actions
 
 import (
@@ -71,7 +75,6 @@ func RepliesEditGet(c buffalo.Context) error {
 		return c.Error(404, err)
 	}
 	c.Set("reply", reply)
-	reply.Author = c.Value("current_user").(*models.User)
 	return c.Render(200, r.HTML("replies/edit"))
 }
 
@@ -89,7 +92,6 @@ func RepliesEditPost(c buffalo.Context) error {
 		return errors.WithStack(err)
 	}
 	c.Flash().Add("success", "Reply edited successfully.")
-
 	return c.Redirect(302, "/topics/detail/%s#%s", reply.TopicID, reply.ID)
 }
 
