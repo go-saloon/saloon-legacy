@@ -21,7 +21,7 @@
 	</a>
 	<a class="col-md-2" href="<%= usersShowPath({uid: topic.AuthorID}) %>"> <%= topic.Author.Username %></a>
 	<div class="col-md-5"></div>
-	<div class="col-md-2 text-right"><%= timeSince(topic.CreatedAt) %> </div>
+	<div class="col-md-2 text-right"><%= timeSince(topic.UpdatedAt) %> </div>
 </div>
 <div class="row">
 	<div class="col-md-8 mt-3 offset-md-1">

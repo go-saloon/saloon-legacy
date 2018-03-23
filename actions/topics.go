@@ -69,14 +69,31 @@ func TopicsCreatePost(c buffalo.Context) error {
 	return c.Redirect(302, "/topics/detail/%s", topic.ID)
 }
 
-// TopicsEdit default implementation.
 func TopicsEditGet(c buffalo.Context) error {
-	return c.Render(200, r.HTML("topics/edit.html"))
+	tx := c.Value("tx").(*pop.Connection)
+	topic := new(models.Topic)
+	if err := tx.Find(topic, c.Param("tid")); err != nil {
+		return c.Error(404, err)
+	}
+	c.Set("topic", topic)
+	return c.Render(200, r.HTML("topics/edit"))
 }
 
-// TopicsEdit default implementation.
 func TopicsEditPost(c buffalo.Context) error {
-	return c.Render(200, r.HTML("topics/edit.html"))
+	tx := c.Value("tx").(*pop.Connection)
+	topic := new(models.Topic)
+	if err := tx.Find(topic, c.Param("tid")); err != nil {
+		return errors.WithStack(err)
+	}
+	if err := c.Bind(topic); err != nil {
+		return errors.WithStack(err)
+	}
+
+	if err := tx.Update(topic); err != nil {
+		return errors.WithStack(err)
+	}
+	c.Flash().Add("success", "Topic edited successfully.")
+	return c.Redirect(302, "/topics/detail/%s", topic.ID)
 }
 
 // TopicsDelete default implementation.
