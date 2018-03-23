@@ -50,6 +50,20 @@ func UsersRegisterPost(c buffalo.Context) error {
 	}
 	user.Avatar = avatar
 	tx := c.Value("tx").(*pop.Connection)
+
+	// subscribe user with all categories.
+	// FIXME(sbinet) we should make the list of default categories
+	// customizable at the application level...
+	// see:
+	//   go-saloon/saloon#8
+	cats := new(models.Categories)
+	if err := tx.All(cats); err != nil {
+		return errors.WithStack(err)
+	}
+	for _, cat := range *cats {
+		user.AddSubscription(cat.ID)
+	}
+
 	verrs, err := user.Create(tx)
 	if err != nil {
 		return errors.WithStack(err)
