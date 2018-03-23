@@ -21,7 +21,7 @@
 			<%= form_for(reply, {action: editRepliesPath({ rid: reply.ID }), method: "POST"}) { %>
 			<%= f.TextArea("Content", {rows: 20, hide_label: true}) %>
 			<button class="btn btn-success" role="submit">Update</button>
-			<a href="<%= editRepliesPath({ rid: reply.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+			<a href="<%= topicsDetailPath({ tid: reply.TopicID }) %>" class="btn btn-warning">Cancel</a>
 			<% } %>
 		</div>
 	</div>

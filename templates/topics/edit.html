@@ -22,7 +22,7 @@
 			<%= f.InputTag("Title") %>
 			<%= f.TextArea("Content", {rows: 20, hide_label: true}) %>
 			<button class="btn btn-success" role="submit">Update</button>
-			<a href="<%= editTopicsPath({ tid: topic.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+			<a href="<%= topicsDetailPath({ tid: topic.ID }) %>" class="btn btn-warning">Cancel</a>
 			<% } %>
 		</div>
 	</div>
