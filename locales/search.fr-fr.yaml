@@ -1,0 +1,4 @@
+- id: "app-search"
+  translation: "Recherche"
+- id: "app-search-match"
+  translation: "Résultats: {{.total}}, en {{.took}}"
