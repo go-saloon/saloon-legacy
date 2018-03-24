@@ -15,18 +15,18 @@
 
 <div class="row mt-3 justify-content-center">
 	<div class="col-md-8 col-sm-10">
-		<h2>Create a new topic</h2>
+		<h2><%= t("topic-create") %></h2>
 		<form action="<%= topicsCreatePath({cid: category.ID}) %>" method="POST">
 			<%= csrf() %>
 			<div class="form-group">
-				<label for="title">Title</label>
+				<label for="title"><%= t("topic-title") %></label>
 				<input type="text" name="Title" class="form-control" id="title" value="<%= topic.Title %>">
 			</div>
 			<div class="form-group">
-				<label for="content">Content</label>
+				<label for="content"><%= t("topic-content") %></label>
 				<textarea class="form-control" name="Content" id="content"  rows="20"><%= topic.Content %></textarea>
 			</div>
-			<button type="submit" class="btn btn-primary">Publish</button>
+			<button type="submit" class="btn btn-primary"><%= t("topic-publish") %></button>
 		</form>
 	</div>
 </div>

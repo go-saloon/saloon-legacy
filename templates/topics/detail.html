@@ -8,9 +8,9 @@
 	</h4>
 	<div class="col-md-1 offset-md-7">
 		<%= if (topic.Subscribed(current_user.ID)) { %>
-		<a href="<%= topicsRmSubscriberPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-volume-off"> Unsubscribe</a>
+		<a href="<%= topicsRmSubscriberPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-volume-off"> <%= t("topic-unsubscribe") %></a>
 		<% } else { %>
-		<a href="<%= topicsAddSubscriberPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-volume-up"> Subscribe</a>
+		<a href="<%= topicsAddSubscriberPath({tid: topic.ID}) %>" class="btn btn-secondary btn-sm m-0 fa fa-volume-up"> <%= t("topic-subscribe") %></a>
 		<% } %>
 	</div>
 </div>
@@ -43,17 +43,17 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Delete topic <%= topic.Title %> ?</h4>
+				<h4 class="modal-title"><%= t("topic-delete-msg", {title: topic.Title}) %></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal  -->
 			<div class="modal-body">
 				<div class="row">
 					<div class="col text-left">
-						<a href="<%= topicsDeletePath({tid: topic.ID}) %>" class="btn btn-danger">Delete</a>
+						<a href="<%= topicsDeletePath({tid: topic.ID}) %>" class="btn btn-danger"><%= t("topic-delete") %></a>
 					</div>
 					<div class="col text-right">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"><%= t("topic-close") %></button>
 					</div>
 				</div>
 			</div>
