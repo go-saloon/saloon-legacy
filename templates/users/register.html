@@ -2,7 +2,7 @@
 	<div class="col-lg-6 col-md-8 col-sm-10">
 		<div class="card">
 			<div class="card-header">
-				<h3>Register</h3>
+				<h3><%= t("user-register") %></h3>
 			</div>
 			<div class="card-body">
 				<%= if (errors) { %>
@@ -18,22 +18,22 @@
 				<form action="<%= usersRegisterPath() %>" method="POST" novalidate>
 					<%= csrf() %>
 					<div class="form-group">
-						<label for="email">Email address</label>
+						<label for="email"><%= t("user-register-email-address") %></label>
 						<input type="email" name="Email" class="form-control" id="email">
 					</div>
 					<div class="form-group">
-						<label for="username">Username</label>
+						<label for="username"><%= t("user-register-username") %></label>
 						<input type="text" name="Username" id="username" class="form-control">
 					</div>
 					<div class="form-group">
-						<label for="pwd1">Password</label>
+						<label for="pwd1"><%= t("user-register-password") %></label>
 						<input name="Password" type="password" class="form-control" id="pwd1">
 					</div>
 					<div class="form-group">
-						<label for="passwordConfirm">Confirm password</label>
+						<label for="passwordConfirm"><%= t("user-register-password-confirm") %></label>
 						<input name="PasswordConfirm" type="password" class="form-control" id="passwordConfirm">
 					</div>
-					<button type="submit" class="btn btn-primary btn-block">Register</button>
+					<button type="submit" class="btn btn-primary btn-block"><%= t("user-register") %></button>
 				</form>
 			</div>
 		</div>

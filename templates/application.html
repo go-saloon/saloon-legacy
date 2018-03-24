@@ -25,14 +25,14 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav mr-auto">
 						<li class="nav-item">
-							<a class="nav-link" href="<%= categoriesIndexPath() %>">Categories</a>
+							<a class="nav-link" href="<%= categoriesIndexPath() %>"><%= t("app-categories") %></a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="#">Topics</a>
+							<a class="nav-link" href="#"><%= t("app-topics") %></a>
 						</li>
 						<%= if (current_user && current_user.Admin) { %>
 						<li class="nav-item">
-							<a class="nav-link" href="<%= usersSettingsPath() %>">Users</a>
+							<a class="nav-link" href="<%= usersSettingsPath() %>"><%= t("app-users") %></a>
 						</li>
 						<% } %>
 					</ul>
@@ -50,19 +50,19 @@
 									<span class="fa fa-caret-down"></span>
 								</button>
 								<div class="dropdown-menu">
-									<a class="dropdown-item nav-link fa fa-gear" href="<%= usersSettingsPath() %>"> Settings</a>
+									<a class="dropdown-item nav-link fa fa-gear" href="<%= usersSettingsPath() %>"> <%= t("app-settings") %></a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item nav-link fa fa-sign-out" href="<%= usersLogoutPath() %>"> Logout</a>
+									<a class="dropdown-item nav-link fa fa-sign-out" href="<%= usersLogoutPath() %>"> <%= t("app-logout") %></a>
 								</div>
 							</div>
 						</li>
 
 						<% } else { %>
 						<li class="nav-item">
-							<a href="<%= usersLoginPath() %>" class="nav-link">Login</a>
+							<a href="<%= usersLoginPath() %>" class="nav-link"><%= t("app-login") %></a>
 						</li>
 						<li class="nav-item">
-							<a href="<%= usersRegisterPath() %>" class="nav-link">Register</a>
+							<a href="<%= usersRegisterPath() %>" class="nav-link"><%= t("app-register") %></a>
 						</li>
 						<% } %>
 					</ul>

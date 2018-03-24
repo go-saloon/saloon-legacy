@@ -1,6 +1,6 @@
 <div class="row mt-5">
 	<div class="col text-center">
-		<h1>Welcome to the <%= forum.Title %> Forum</h1>
+		<h1><%= t("app-welcome", {title: forum.Title}) %></h1>
 		<p> <%= forum.Description %> </p>
 	</div>
 </div>
