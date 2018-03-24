@@ -17,14 +17,14 @@
 		<h2><%= category.Title %></h2>
 	</div>
 	<div class="col-md-4 col-sm-4 text-right">
-		<a href="<%= topicsCreatePath({cid: category.ID}) %>" class="btn btn-primary btn-sm m-0">New Topic</a>
+		<a href="<%= topicsCreatePath({cid: category.ID}) %>" class="btn btn-primary btn-sm m-0"><%= t("category-new-topic") %></a>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-8">Topic</div>
-	<div class="col-md-2 text-center">Users</div>
-	<div class="col-md-1 text-center">Replies</div>
-	<div class="col-md-1 text-center">Activity</div>
+	<div class="col-md-8"><%= t("category-topic") %></div>
+	<div class="col-md-2 text-center"><%= t("category-users") %></div>
+	<div class="col-md-1 text-center"><%= t("category-replies") %></div>
+	<div class="col-md-1 text-center"><%= t("category-activity") %></div>
 </div>
 <%= for (topic) in topics { %>
 <div class="row">

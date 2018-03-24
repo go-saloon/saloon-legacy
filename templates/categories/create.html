@@ -14,18 +14,18 @@
 </div>
 <div class="row mt-3 justify-content-center">
 	<div class="col-md-8 col-sm-10">
-		<h2>Create a new category</h2>
+		<h2><%= t("category-new-category") %></h2>
 		<form action="<%= categoriesCreatePath() %>" method="POST">
 			<%= csrf() %>
 			<div class="form-group">
-				<label for="title">Title</label>
+				<label for="title"><%= t("category-title") %></label>
 				<input type="text" name="Title" class="form-control" id="title" value="<%= category.Title %>">
 			</div>
 			<div class="form-group">
-				<label for="content">Description</label>
+				<label for="content"><%= t("category-description") %></label>
 				<textarea class="form-control" name="Description" id="description"  rows="20"><%= category.Description %></textarea>
 			</div>
-			<button type="submit" class="btn btn-primary">Create</button>
+			<button type="submit" class="btn btn-primary"><%= t("category-create") %></button>
 		</form>
 	</div>
 </div>
