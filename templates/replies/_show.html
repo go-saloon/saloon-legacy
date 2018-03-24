@@ -25,17 +25,17 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Delete reply ?</h4>
+				<h4 class="modal-title"><%= t("reply-delete-msg") %></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal  -->
 			<div class="modal-body">
 				<div class="row">
 					<div class="col text-left">
-						<a href="<%= repliesDeletePath({rid: reply.ID}) %>" class="btn btn-danger">Delete</a>
+						<a href="<%= repliesDeletePath({rid: reply.ID}) %>" class="btn btn-danger"><%= t("reply-delete") %></a>
 					</div>
 					<div class="col text-right">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"><%= t("reply-cancel") %></button>
 					</div>
 				</div>
 			</div>

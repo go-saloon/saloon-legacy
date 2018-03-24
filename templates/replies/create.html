@@ -15,13 +15,13 @@
 
 <div class="row mt-3 justify-content-center">
 	<div class="col-md-8 col-sm-10">
-		<h2>Reply</h2>
+		<h2><%= t("reply-reply") %></h2>
 		<form action="<%= repliesCreatePath({tid: topic.ID}) %>" method="POST">
 			<%= csrf() %>
 			<div class="form-group">
 				<textarea class="form-control" name="Content" id="content"  rows="20"><%= reply.Content %></textarea>
 			</div>
-			<button type="submit" class="btn btn-primary">Send</button>
+			<button type="submit" class="btn btn-primary"><%= t("reply-send") %></button>
 		</form>
 	</div>
 </div>

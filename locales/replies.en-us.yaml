@@ -1,0 +1,18 @@
+- id: "reply-reply"
+  translation: "Reply"
+- id: "reply-send"
+  translation: "Send"
+
+- id: "reply-delete-msg"
+  translation: "Delete reply ?"
+- id: "reply-delete"
+  translation: "Delete"
+- id: "reply-cancel"
+  translation: "Cancel"
+
+- id: "reply-edit"
+  translation: "Edit Reply"
+- id: "reply-update"
+  translation: "Update"
+- id: "reply-cancel"
+  translation: "Cancel"

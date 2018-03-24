@@ -15,13 +15,13 @@
 
 <div class="row mt-3 justify-content-center">
 	<div class="col-md-8 col-sm-10">
-		<h2>Edit Reply</h2>
+		<h2><%= t("reply-edit") %></h2>
 		<%= csrf() %>
 		<div>
 			<%= form_for(reply, {action: editRepliesPath({ rid: reply.ID }), method: "POST"}) { %>
 			<%= f.TextArea("Content", {rows: 20, hide_label: true}) %>
-			<button class="btn btn-success" role="submit">Update</button>
-			<a href="<%= topicsDetailPath({ tid: reply.TopicID }) %>" class="btn btn-warning">Cancel</a>
+			<button class="btn btn-success" role="submit"><%= t("reply-update") %></button>
+			<a href="<%= topicsDetailPath({ tid: reply.TopicID }) %>" class="btn btn-warning"><%= t("reply-cancel") %></a>
 			<% } %>
 		</div>
 	</div>
