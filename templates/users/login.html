@@ -2,7 +2,7 @@
 	<div class="col-lg-6 col-md-8 col-sm-10">
 		<div class="card">
 			<div class="card-header">
-				<h3>Login</h3>
+				<h3><%= t("user-login") %></h3>
 			</div>
 			<div class="card-body">
 				<%= if (errors) { %>
@@ -19,14 +19,14 @@
 				<form action="<%= usersLoginPath() %>" method="POST" novalidate>
 					<%= csrf() %>
 					<div class="form-group">
-						<label for="username">Username</label>
+						<label for="username"><%= t("user-login-username") %></label>
 						<input type="text" name="Username" class="form-control" id="username">
 					</div>
 					<div class="form-group">
-						<label for="pwd">Password</label>
+						<label for="pwd"><%= t("user-login-password") %></label>
 						<input name="Password" type="password" class="form-control" id="pwd">
 					</div>
-					<button type="submit" class="btn btn-primary btn-block">Login</button>
+					<button type="submit" class="btn btn-primary btn-block"><%= t("user-login-button") %></button>
 				</form>
 			</div>
 		</div>

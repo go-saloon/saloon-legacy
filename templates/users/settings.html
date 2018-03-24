@@ -11,14 +11,14 @@
 <hr class="col-md-12">
 
 <div class="row">
-	<h5 class="col-md-3">Username</h5>
+	<h5 class="col-md-3"><%= t("user-settings-username") %></h5>
 </div>
 <div class="row"/>
 	<div class="col-md-2 "><%= current_user.Username %></div>
 </div>
 
 <div class="row mt-3">
-	<h5 class="col-md-2">Name</h5>
+	<h5 class="col-md-2"><%= t("user-settings-name") %></h5>
 </div>
 <div class="row"/>
 	<div class="col-md-2"><%= current_user.FullName %></div>
@@ -26,7 +26,7 @@
 </div>
 
 <div class="row mt-3">
-	<h5 class="col-md-2">Email</h5>
+	<h5 class="col-md-2"><%= t("user-settings-email") %></h5>
 </div>
 <div class="row"/>
 	<div class="col-md-2"><%= current_user.Email %></div>
@@ -34,22 +34,22 @@
 </div>
 
 <div class="row mt-3">
-	<h5 class="col-md-2">Password</h5>
+	<h5 class="col-md-2"><%= t("user-settings-password") %></h5>
 </div>
 <div class="row"/>
-	<button type="button" class="fa fa-pencil btn btn-alert" style="height:50%" data-toggle="modal" data-target="#user-update-password"> Change Password</button>
+	<button type="button" class="fa fa-pencil btn btn-alert" style="height:50%" data-toggle="modal" data-target="#user-update-password"> <%= t("user-settings-change-password") %></button>
 </div>
 
 <div class="row mt-5 mb-2">
-	<h5>Subscriptions</h5>
+	<h5><%= t("user-settings-subscriptions") %></h5>
 </div>
 
 <div class="row">
 	<table class="table table-striped col-md-8 offset-md-2">
 		<thead>
 			<tr>
-				<th>Category</th>
-				<th>Status</th>
+				<th><%= t("user-settings-category") %></th>
+				<th><%= t("user-settings-status") %></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -72,7 +72,7 @@
 </div>
 
 <div class="row mt-5 mb-2">
-	<h5>Profile Picture</h5>
+	<h5><%= t("user-settings-profile-picture") %></h5>
 </div>
 <div class="row">
 	<div class="col-md-1">
@@ -86,7 +86,7 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Update name</h4>
+				<h4 class="modal-title"><%= t("user-settings-update-name") %></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal  -->
@@ -97,8 +97,8 @@
 						<%= f.InputTag("FullName") %>
 					</div>
 				</div>
-				<button class="btn btn-success" role="submit">Save</button>
-				<a href="<%= usersSettingsPath() %>" class="btn btn-warning">Cancel</a>
+				<button class="btn btn-success" role="submit"><%= t("user-settings-save") %></button>
+				<a href="<%= usersSettingsPath() %>" class="btn btn-warning"><%= t("user-settings-cancel") %></a>
 				<% } %>
 			</div>
 		</div>
@@ -110,15 +110,15 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Upload new avatar</h4>
+				<h4 class="modal-title"><%= t("user-settings-upload-avatar") %></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal  -->
 			<div class="modal-body">
 				<%= form_for(avatar, {action: usersSettingsUpdateAvatarPath(), method: "POST"}) { %>
 				<%= f.FileTag("File") %>
-				<button class="btn btn-success" role="submit">Upload</button>
-				<a href="<%= usersSettingsPath() %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+				<button class="btn btn-success" role="submit"><%= t("user-settings-upload") %></button>
+				<a href="<%= usersSettingsPath() %>" class="btn btn-warning"><%= t("user-settings-cancel") %></a>
 				<% } %>
 			</div>
 		</div>
@@ -130,7 +130,7 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Update Email</h4>
+				<h4 class="modal-title"><%= t("user-settings-update-email") %></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal  -->
@@ -141,8 +141,8 @@
 						<%= f.InputTag("Email") %>
 					</div>
 				</div>
-				<button class="btn btn-success" role="submit">Save</button>
-				<a href="<%= usersSettingsPath() %>" class="btn btn-warning">Cancel</a>
+				<button class="btn btn-success" role="submit"><%= t("user-settings-save") %></button>
+				<a href="<%= usersSettingsPath() %>" class="btn btn-warning"><%= t("user-settings-cancel") %></a>
 				<% } %>
 			</div>
 		</div>
@@ -154,7 +154,7 @@
 		<div class="modal-content">
 			<!-- Modal Header -->
 			<div class="modal-header">
-				<h4 class="modal-title">Update Password</h4>
+				<h4 class="modal-title"><%= t("user-settings-update-password") %></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<!-- Modal  -->
@@ -162,14 +162,14 @@
 				<form action="<%= usersSettingsUpdatePasswordPath() %>" method="POST" novalidate>
 					<%= csrf() %>
 					<div class="form-group">
-						<label for="pwd1">Password</label>
+						<label for="pwd1"><%= t("user-settings-password") %></label>
 						<input name="Password" type="password" class="form-control" id="pwd1">
 					</div>
 					<div class="form-group">
-						<label for="passwordConfirm">Confirm password</label>
+						<label for="passwordConfirm"><%= t("user-settings-password-confirm") %></label>
 						<input name="PasswordConfirm" type="password" class="form-control" id="passwordConfirm">
 					</div>
-					<button type="submit" class="btn btn-primary btn-block">Update</button>
+					<button type="submit" class="btn btn-primary btn-block"><%= t("user-settings-update") %></button>
 				</form>
 			</div>
 		</div>
@@ -186,13 +186,13 @@
 
 <%= for (usr) in users { %>
 <%= if (current_user.Username != usr.Username) { %>
-<h6> User: <%= usr.Username %> <%= if (usr.Email != "") { %> (<%= usr.Email %>)  <% } %></h6>
+<h6> <%= t("user-settings-user") %>: <%= usr.Username %> <%= if (usr.Email != "") { %> (<%= usr.Email %>)  <% } %></h6>
 <div class="row" id="<%= usr.ID %>">
 	<table class="table table-striped col-md-8 offset-md-2">
 		<thead>
 			<tr>
-				<th>Category</th>
-				<th>Status</th>
+				<th><%= t("user-settings-category") %></th>
+				<th><%= t("user-settings-status") %></th>
 			</tr>
 		</thead>
 		<tbody>
