@@ -6,6 +6,7 @@ package actions
 
 import (
 	"bytes"
+	"database/sql"
 	"fmt"
 	"image"
 	_ "image/gif"
@@ -126,6 +127,10 @@ func SetCurrentUser(next buffalo.Handler) buffalo.Handler {
 			tx := c.Value("tx").(*pop.Connection)
 			err := tx.Find(u, uid)
 			if err != nil {
+				if errors.Cause(err) == sql.ErrNoRows {
+					c.Session().Clear()
+					return c.Redirect(302, "/")
+				}
 				return errors.WithStack(err)
 			}
 			c.Set("current_user", u)
