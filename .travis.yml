@@ -13,6 +13,7 @@ matrix:
 
 env:
   - GO_ENV=test
+  - GO111MODULE=on
 
 services:
   - postgresql
