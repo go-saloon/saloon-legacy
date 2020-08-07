@@ -20,9 +20,9 @@ services:
   - postgresql
 
 before_script:
-  - buffalo db create -a
-  - buffalo db migrate
-  - buffalo t db:setup
+  - ./buffalo db create -a
+  - ./buffalo db migrate
+  - ./buffalo t db:setup
   - mkdir -p $TRAVIS_BUILD_DIR/public/assets
   - go get github.com/gobuffalo/suite
 
@@ -30,6 +30,6 @@ go_import_path: github.com/go-saloon/saloon
 
 install:
   - go get -v ./...
-  - go get github.com/gobuffalo/buffalo/buffalo
+  - go build -o ./buffalo $(go env GOMODCACHE)/github.com/gobuffalo/buffalo@v0.11.1-0.20180329210144-44948b8981b1/buffalo
 
-script: buffalo test
+script: ./buffalo test
