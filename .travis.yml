@@ -12,8 +12,9 @@ matrix:
    - go: master
 
 env:
-  - GO_ENV=test
-  - GO111MODULE=on
+  global:
+    - GO_ENV=test
+    - GO111MODULE=on
 
 services:
   - postgresql
@@ -28,6 +29,7 @@ before_script:
 go_import_path: github.com/go-saloon/saloon
 
 install:
+  - go get -v ./...
   - go get github.com/gobuffalo/buffalo/buffalo
 
 script: buffalo test
