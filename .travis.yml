@@ -15,6 +15,7 @@ env:
   global:
     - GO_ENV=test
     - GO111MODULE=on
+    - GOMODCACHE=/home/travis/gopath/pkg/mod
 
 services:
   - postgresql
@@ -30,6 +31,6 @@ go_import_path: github.com/go-saloon/saloon
 
 install:
   - go get -v ./...
-  - go build -o ./buffalo $(go env GOMODCACHE)/github.com/gobuffalo/buffalo@v0.11.1-0.20180329210144-44948b8981b1/buffalo
+  - go build -o ./buffalo $GOMODCACHE/github.com/gobuffalo/buffalo@v0.11.1-0.20180329210144-44948b8981b1/buffalo
 
 script: ./buffalo test
