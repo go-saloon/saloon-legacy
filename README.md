@@ -1,9 +1,12 @@
-# Saloon
+# Saloon (legacy)
 
 [![Build Status](https://travis-ci.org/go-saloon/saloon.svg?branch=master)](https://travis-ci.org/go-saloon/saloon)
 [![GoDoc](https://godoc.org/github.com/go-saloon/saloon?status.svg)](https://godoc.org/github.com/go-saloon/saloon)
 
-Saloon is a _Work in Progress_ forum based on [Buffalo](https://gobuffalo.io).
+Saloon is a _Work in Progress_ forum based on [Buffalo](https://gobuffalo.io). 
+This particular repository houses the legacy saloon which is no longer maintained.
+
+See [saloon](https://github.com/go-saloon/saloon) for a newer saloon in working condition.
 
 ## Database setup
 
