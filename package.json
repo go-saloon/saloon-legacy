@@ -9,7 +9,7 @@
     "babel-loader": "~7.1.2",
     "babel-preset-env": "~1.6",
     "bootstrap": "4",
-    "bootstrap-sass": "~3.3.7",
+    "bootstrap-sass": "~3.4.1",
     "clean-webpack-plugin": "~0.1.17",
     "copy-webpack-plugin": "4.5",
     "css-loader": "~0.28.4",
