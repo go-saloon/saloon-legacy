@@ -75,35 +75,35 @@ INFO[2018-03-20T15:40:31+01:00] Starting Simple Background Worker
 
 ### Welcome page
 
-![00-home](https://github.com/go-saloon/saloon/raw/master/docs/images/00-home.png)
+![00-home](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/00-home.png)
 
 ### Register a new user
 
-![01-register](https://github.com/go-saloon/saloon/raw/master/docs/images/01-register.png)
+![01-register](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/01-register.png)
 
 ### Logged in
 
-![02-logged](https://github.com/go-saloon/saloon/raw/master/docs/images/02-logged-in.png)
+![02-logged](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/02-logged-in.png)
 
 ### Create a category
 
-![03-create-category](https://github.com/go-saloon/saloon/raw/master/docs/images/03-create-category.png)
-![04-create-category-ok](https://github.com/go-saloon/saloon/raw/master/docs/images/04-create-category-ok.png)
+![03-create-category](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/03-create-category.png)
+![04-create-category-ok](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/04-create-category-ok.png)
 
 ### Create a topic
 
-![05-create-topic](https://github.com/go-saloon/saloon/raw/master/docs/images/05-create-topic.png)
-![06-create-topic](https://github.com/go-saloon/saloon/raw/master/docs/images/06-create-topic-ok.png)
+![05-create-topic](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/05-create-topic.png)
+![06-create-topic](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/06-create-topic-ok.png)
 
 ### Reply to a topic
 
-![07-reply](https://github.com/go-saloon/saloon/raw/master/docs/images/07-create-reply.png)
-![08-reply](https://github.com/go-saloon/saloon/raw/master/docs/images/08-create-reply-ok.png)
+![07-reply](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/07-create-reply.png)
+![08-reply](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/08-create-reply-ok.png)
 
 ### Topics
 
-![09-topics](https://github.com/go-saloon/saloon/raw/master/docs/images/09-topics-list.png)
+![09-topics](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/09-topics-list.png)
 
 ### User settings
 
-![10-users-settings](https://github.com/go-saloon/saloon/raw/master/docs/images/10-users-settings.png)
+![10-users-settings](https://github.com/go-saloon/saloon-legacy/raw/master/docs/images/10-users-settings.png)
